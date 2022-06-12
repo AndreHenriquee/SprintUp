@@ -13,10 +13,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+define('MAIN_VIEW', 'main');
 
-Route::get('macaquinho', function () {
-    return view('macaquinho');
+function buildView(array $view_parameters)
+{
+    return view(
+        MAIN_VIEW,
+        $view_parameters
+    );
+}
+
+Route::get('/', function () {
+    return buildView([
+        'title' => 'Sprint Up Home',
+        'body' => 'src.home-body',
+    ]);
 });

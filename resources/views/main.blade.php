@@ -1,0 +1,1 @@
+<livewire:page :title="$title" :body="$body" />
