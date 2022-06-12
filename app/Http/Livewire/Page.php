@@ -8,6 +8,7 @@ class Page extends Component
 {
     public $title;
     public $body;
+    public $pageAlias;
 
     public function render()
     {

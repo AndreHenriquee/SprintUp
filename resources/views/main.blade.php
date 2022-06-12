@@ -1,1 +1,1 @@
-<livewire:page :title="$title" :body="$body" />
+<livewire:page :title="$title" :body="$body" :pageAlias="$pageAlias" />

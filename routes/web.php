@@ -15,17 +15,25 @@ use Illuminate\Support\Facades\Route;
 
 define('MAIN_VIEW', 'main');
 
-function buildView(array $view_parameters)
-{
+function buildView(
+    string $pageAlias,
+    string $pageTitle,
+    string $bodyComponentName
+) {
     return view(
         MAIN_VIEW,
-        $view_parameters
+        [
+            'pageAlias' => $pageAlias,
+            'title' => $pageTitle,
+            'body' => $bodyComponentName,
+        ]
     );
 }
 
 Route::get('/', function () {
-    return buildView([
-        'title' => 'Sprint Up Home',
-        'body' => 'src.home-body',
-    ]);
+    return buildView(
+        'kanban',
+        'Sprint Up Kanban',
+        'src.kanban.kanban-body'
+    );
 });
