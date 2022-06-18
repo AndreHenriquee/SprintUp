@@ -6,9 +6,10 @@ use Livewire\Component;
 
 class Page extends Component
 {
+    public $alias;
     public $title;
     public $body;
-    public $pageAlias;
+    public $loadMenu;
 
     public function render()
     {

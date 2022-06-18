@@ -2,9 +2,8 @@
 
 namespace App\Http\Livewire\Src\Kanban;
 
-use Illuminate\Session\Middleware\StartSession;
-use Livewire\Component;
 use Illuminate\Support\Facades\DB;
+use Livewire\Component;
 
 class KanbanBody extends Component
 {
@@ -13,7 +12,7 @@ class KanbanBody extends Component
 
     public function render()
     {
-        $this->data = self::fetchKanbanData(getSessionParams());
+        $this->data = self::fetchKanbanData(session('user_data'));
         $this->columns = self::fetchColumns((int) $this->data['id']);
 
         return view('livewire.src.kanban.kanban-body');

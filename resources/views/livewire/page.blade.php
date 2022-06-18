@@ -3,7 +3,9 @@
 <livewire:page.head :title="$title" />
 
 <body class="bg-light">
-    <livewire:page.menu :pageAlias="$pageAlias" />
+    @if ($loadMenu)
+    <livewire:page.menu :alias="$alias" />
+    @endif
     <livewire:is :component="$body" />
     <script src="/js/app.js"></script>
     <livewire:scripts />

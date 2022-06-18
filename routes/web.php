@@ -15,29 +15,19 @@ use Illuminate\Support\Facades\Route;
 
 define('MAIN_VIEW', 'main');
 
-function getSessionParams()
-{
-    session_start();
-
-    $sessionParams = [
-        'usuario_id' => $_SESSION['usuario_id'],
-        'squad_id' => $_SESSION['squad_id'],
-    ];
-
-    return $sessionParams;
-}
-
 function buildView(
     string $pageAlias,
     string $pageTitle,
-    string $bodyComponentName
+    string $bodyComponentName,
+    bool $loadMenu = true
 ) {
     return view(
         MAIN_VIEW,
         [
-            'pageAlias' => $pageAlias,
+            'alias' => $pageAlias,
             'title' => $pageTitle,
             'body' => $bodyComponentName,
+            'loadMenu' => $loadMenu,
         ]
     );
 }
@@ -45,7 +35,7 @@ function buildView(
 Route::get('/', function () {
     return buildView(
         'login',
-        'Sprint Up login',
+        'Sprint Up | Login',
         'src.login.login-body'
     );
 });
@@ -53,7 +43,15 @@ Route::get('/', function () {
 Route::get('kanban', function () {
     return buildView(
         'kanban',
-        'Sprint Up Kanban',
+        'Sprint Up | Kanban',
         'src.kanban.kanban-body'
+    );
+});
+
+Route::get('documentacoes', function () {
+    return buildView(
+        'documentacoes',
+        'Sprint Up | Documentações',
+        'src.documentacoes.documentacoes-body'
     );
 });
