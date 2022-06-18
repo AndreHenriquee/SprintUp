@@ -6,6 +6,7 @@
     <livewire:page.menu :pageAlias="$pageAlias" />
     <livewire:is :component="$body" />
     <script src="/js/app.js"></script>
+    <livewire:scripts />
 </body>
 
 </html>

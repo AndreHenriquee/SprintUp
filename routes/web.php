@@ -15,6 +15,18 @@ use Illuminate\Support\Facades\Route;
 
 define('MAIN_VIEW', 'main');
 
+function getSessionParams()
+{
+    session_start();
+
+    $sessionParams = [
+        'usuario_id' => $_SESSION['usuario_id'],
+        'squad_id' => $_SESSION['squad_id'],
+    ];
+
+    return $sessionParams;
+}
+
 function buildView(
     string $pageAlias,
     string $pageTitle,
@@ -31,6 +43,14 @@ function buildView(
 }
 
 Route::get('/', function () {
+    return buildView(
+        'login',
+        'Sprint Up login',
+        'src.login.login-body'
+    );
+});
+
+Route::get('kanban', function () {
     return buildView(
         'kanban',
         'Sprint Up Kanban',
