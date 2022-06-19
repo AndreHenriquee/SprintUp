@@ -36,7 +36,8 @@ Route::get('/', function () {
     return buildView(
         'login',
         'Sprint Up | Login',
-        'src.login.login-body'
+        'src.login.login-body',
+        false
     );
 });
 
