@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{$data['titulo']}} - {{$data['referencia']}}</h5>
+                <h5 class="modal-title">{{$data['referencia']}} | {{$data['titulo']}}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -22,7 +22,7 @@
                     </div>
                 </div>
                 <!-- <div class="row">
-                    <b class="modal-title">Comentarios</b>
+                    <b class="modal-title">Comentários</b>
                 </div> -->
             </div>
         </div>
