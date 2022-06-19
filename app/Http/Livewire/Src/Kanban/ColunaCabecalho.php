@@ -6,12 +6,7 @@ use Livewire\Component;
 
 class ColunaCabecalho extends Component
 {
-    public $coluna_id;
-    public $nome;
-    public $descricao;
-    public $inicio_tarefa;
-    public $fim_tarefa;
-    public $wip;
+    public $columnData;
 
     public function render()
     {
