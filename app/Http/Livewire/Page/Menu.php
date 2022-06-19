@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class Menu extends Component
 {
-    public $pageAlias;
+    public $alias;
 
     public function render()
     {
