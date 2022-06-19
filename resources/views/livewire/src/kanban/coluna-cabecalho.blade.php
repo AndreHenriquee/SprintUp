@@ -1,4 +1,4 @@
-<div class="col p-2 bg-secondary rounded-top ms-1 mt-1 me-1">
+<div class="col p-2 rounded-top ms-1 mt-1 me-1" style="background-color:#e6e6e6;">
     <div class="row">
         <div title="{{$nome}} | {{$descricao}}" class="col-7 h5 text-truncate text-dark">
             @if ($inicio_tarefa)
