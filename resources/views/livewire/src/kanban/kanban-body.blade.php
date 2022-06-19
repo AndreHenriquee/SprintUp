@@ -16,7 +16,7 @@
         <div class="col-12">
             <div class="row pe-4">
                 @foreach ($columns as $column)
-                <livewire:src.kanban.coluna-cabecalho :nome="$column->nome" :descricao="$column->descricao" :inicio_tarefa="$column->inicio_tarefa" :fim_tarefa="$column->fim_tarefa" :wip="$column->wip" />
+                <livewire:src.kanban.coluna-cabecalho :columnData="(array) $column" />
                 @endforeach
             </div>
         </div>

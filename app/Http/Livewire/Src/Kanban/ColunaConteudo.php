@@ -9,15 +9,17 @@ class ColunaConteudo extends Component
 {
     public $columnData;
     public $cards;
+    public $wipHitted;
 
     public function render()
     {
         $this->cards = self::fetchColumnCards((int) $this->columnData['coluna_id']);
+        $this->wipHitted = self::isWipHitted(count($this->cards), (int) $this->columnData['wip']);
 
         return view('livewire.src.kanban.coluna-conteudo');
     }
 
-    public static function fetchColumnCards(int $columnId)
+    private static function fetchColumnCards(int $columnId)
     {
         $cardsQuery = <<<SQL
             SELECT
@@ -54,5 +56,14 @@ class ColunaConteudo extends Component
             $cardsQuery,
             [$columnId]
         );
+    }
+
+    private static function isWipHitted(int $cardsNumber, ?int $columnWip)
+    {
+        if (!$columnWip) {
+            return false;
+        }
+
+        return $cardsNumber > $columnWip;
     }
 }
