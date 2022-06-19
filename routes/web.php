@@ -56,3 +56,11 @@ Route::get('documentacoes', function () {
         'src.documentacoes.documentacoes-body'
     );
 });
+
+Route::get('roadmap', function () {
+    return buildView(
+        'roadmap',
+        'Sprint Up | Roadmap',
+        'src.roadmap.roadmap'
+    );
+});
