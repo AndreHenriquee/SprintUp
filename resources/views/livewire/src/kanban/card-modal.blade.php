@@ -1,4 +1,4 @@
-<div class="modal fade" id="modalCard-{{$data['id']}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalCard-{{$data['id']}}" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -21,9 +21,9 @@
                         <p class="text-wrap">Atualizado em: {{$data['data_hora_ultima_movimentacao']}}</p>
                     </div>
                 </div>
-                <div class="row">
-                    <!-- <b class="modal-title">Comentarios</b> -->
-                </div>
+                <!-- <div class="row">
+                    <b class="modal-title">Comentarios</b>
+                </div> -->
             </div>
         </div>
     </div>

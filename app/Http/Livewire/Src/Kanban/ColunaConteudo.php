@@ -13,7 +13,7 @@ class ColunaConteudo extends Component
 
     public function render()
     {
-        $this->cards = self::fetchColumnCards((int) $this->columnData['coluna_id']);
+        $this->cards = self::fetchColumnCards((int) $this->columnData['id']);
         $this->wipHitted = self::isWipHitted(count($this->cards), (int) $this->columnData['wip']);
 
         return view('livewire.src.kanban.coluna-conteudo');
@@ -43,13 +43,13 @@ class ColunaConteudo extends Component
             FROM tarefa t
             INNER JOIN coluna col
                 ON t.coluna_id = col.id
+                AND col.id = ?
             INNER JOIN usuario us1
                 ON t.responsavel_id = us1.id
             INNER JOIN usuario us2
                 ON t.relator_id = us2.id
             INNER JOIN estimativa_tarefa est
                 ON t.estimativa_tarefa_id = est.id
-            WHERE col.id = ?
         SQL;
 
         return DB::select(

@@ -1,14 +1,10 @@
 <div class="container">
     <div class="row">
-        <div class="col-12">
-            <div class="row">
-                <div title="{{$data['nome']}}" class="h1 col-4 pe-3 text-truncate border-end border-dark">
-                    {{$data['nome']}}
-                </div>
-                <div title="{{$data['descricao']}}" class="col-8 my-auto text-truncate">
-                    {{$data['descricao']}}
-                </div>
-            </div>
+        <div title="{{$data['nome']}}" class="h1 col-4 pe-3 text-truncate border-end border-dark">
+            {{$data['nome']}}
+        </div>
+        <div title="{{$data['descricao']}}" class="col-8 my-auto text-truncate">
+            {{$data['descricao']}}
         </div>
     </div>
     <hr class="opacity-100">
