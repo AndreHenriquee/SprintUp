@@ -1,4 +1,4 @@
-<div id="columnHead-{{$columnData['coluna_id']}}" class="col p-2 rounded-top ms-1 mt-1 me-1" style="background-color:#e6e6e6;">
+<div id="columnHead-{{$columnData['id']}}" class="col p-2 rounded-top ms-1 mt-1 me-1" style="background-color:#e6e6e6;">
     <div class="row">
         <div title="{{$columnData['nome']}} | {{$columnData['descricao']}}" class="col-7 h5 text-truncate text-dark">
             @if ($columnData['inicio_tarefa'])
@@ -18,7 +18,7 @@
             {{$columnData['nome']}}
         </div>
 
-        <div id="wipLabel-{{$columnData['coluna_id']}}" class="col-5 h6 text-end">
+        <div id="wipLabel-{{$columnData['id']}}" class="col-5 h6 text-end">
             @if ($columnData['wip'])
             WIP: {{$columnData['wip']}}
             @endif

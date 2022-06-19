@@ -1,9 +1,9 @@
 <div class="d-flex">
     <div class="row text-light">
-        <div class="col text-truncate border-end border-light">
+        <div title="{{$loginInfo['usuario']['nome']}}" class="col text-truncate border-end border-light">
             {{$loginInfo['usuario']['nome']}}
         </div>
-        <div class="col text-truncate border-end border-light">
+        <div title="{{$loginInfo['squad']['nome']}}" class="col text-truncate border-end border-light">
             {{$loginInfo['squad']['nome']}}
         </div>
         <div class="col">

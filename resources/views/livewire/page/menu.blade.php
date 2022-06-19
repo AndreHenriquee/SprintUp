@@ -17,20 +17,7 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Trocar squad
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li>
-                            <h6 class="dropdown-header">Equipe 1</h6>
-                        </li>
-                        <li class="pl-4"><a class="dropdown-item" href="#">Squad 1</a></li>
-                        <li><a class="dropdown-item" href="#">Squad 2</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <h6 class="dropdown-header">Equipe 2</h6>
-                        </li>
-                        <li><a class="dropdown-item" href="#">Squad 3</a></li>
-                    </ul>
+                    <livewire:page.squad-list />
                 </li>
             </ul>
             <livewire:page.login-info />

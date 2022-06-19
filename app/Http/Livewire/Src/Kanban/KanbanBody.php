@@ -42,7 +42,7 @@ class KanbanBody extends Component
     {
         $columnsQuery = <<<SQL
             SELECT
-                id AS coluna_id
+                id
                 , nome
                 , descricao
                 , inicio_tarefa
