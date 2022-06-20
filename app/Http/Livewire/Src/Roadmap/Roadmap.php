@@ -7,58 +7,109 @@ use Illuminate\Support\Facades\DB;
 
 class Roadmap extends Component
 {
-    public $data;
-    public $products;
+    public $routeParams;
+    public $teamData;
+    public $features;
 
     public function render()
     {
-        $this->data = self::fetchProductData(session(['1']));
-        $this->products = self::fetchProducts((int) $this->data['id']);
+        $this->teamData = self::fetchTeamData(
+            $this->routeParams['equipe_id'] ?? null,
+            session('user_data')
+        );
+
+        $this->features = ['TO_DO' => [], 'DOING' => [], 'DONE' => []];
+
+        if (isset($this->teamData['id'])) {
+            $this->features = self::fetchFeatures($this->teamData['id']);
+        };
 
         return view('livewire.src.roadmap.roadmap');
     }
 
-    private static function fetchProductData()
+    private function fetchTeamData($teamId, array $sessionParams)
     {
-        $dataQuery = <<<SQL
+        if (!$teamId) {
+            $teamBySquadQuery = <<<SQL
+                SELECT
+                    e.id
+                    , e.nome
+                FROM equipe e
+                JOIN squad s
+                    ON e.id = s.equipe_id
+                    AND s.id = ?
+            SQL;
+
+            return (array) DB::selectOne(
+                $teamBySquadQuery,
+                [$sessionParams['squad_id']],
+            );
+        }
+
+        $teamByIdQuery = <<<SQL
             SELECT
-                c.id id
-                , c.nome
-            FROM cliente c
-            WHERE c.id = 1
+                id
+                , nome
+            FROM equipe
+            WHERE id = ?
         SQL;
 
         return (array) DB::selectOne(
-            $dataQuery,
-
+            $teamByIdQuery,
+            [$teamId],
         );
     }
 
-    /*private static function fetchProducts(int $productId)
+    private static function fetchFeatures(int $equipe_id)
     {
-        $columnsQuery = <<<SQL
+        $featuresQuery = <<<SQL
             SELECT
                 f.id
+                , e.nome AS equipe_nome
+                , (
+                    CASE
+                        WHEN f.data_inicio > NOW()
+                            THEN "TO_DO"
+                        WHEN f.data_inicio <= NOW() AND f.finalizada = 0 AND f.porcentagem_conclusao < 100
+                            THEN "DOING"
+                        ELSE "DONE"
+                    END
+                ) AS `status`
+                -- Pré-visualização
                 , f.nome
-                , f.descricao
                 , f.imagem
                 , f.data_inicio
                 , f.data_fim
                 , f.porcentagem_conclusao
                 , f.finalizada
+                -- Detalhamento da funcionalidade
+                , f.descricao
                 , f.data_hora_replanejamento
                 , f.produto_id
-                , p.id
-                , p.nome
-                , p.equipe_id
+                , p.id AS produto_id
+                , p.nome AS produto_nome
+                , p.imagem AS produto_imagem
             FROM funcionalidade f
-            INNER JOIN produto p
-                ON f.id = ?
+            JOIN produto p
+                ON f.produto_id = p.id
+            JOIN equipe e
+                ON p.equipe_id = e.id
+                AND e.id = ?
+                AND e.roadmap_ativo = 1
+            ORDER BY f.data_fim DESC
         SQL;
 
-        return DB::select(
-            $columnsQuery,
-            [$productId],
+        $features = DB::select(
+            $featuresQuery,
+            [$equipe_id],
         );
-    }*/
+
+        $groupedFeatures = ['TO_DO' => [], 'DOING' => [], 'DONE' => []];
+
+        foreach ($features as $feature) {
+            $groupedFeatures[$feature->status][] = $feature;
+        }
+
+        return $groupedFeatures;
+    }
 }
