@@ -6,7 +6,11 @@
     @if ($loadMenu)
     <livewire:page.menu :alias="$alias" />
     @endif
+    @if (empty($routeParams))
     <livewire:is :component="$body" />
+    @else
+    <livewire:is :component="$body" :routeParams="$routeParams" />
+    @endif
     <script src="/js/app.js"></script>
     <livewire:scripts />
 </body>

@@ -19,7 +19,8 @@ function buildView(
     string $pageAlias,
     string $pageTitle,
     string $bodyComponentName,
-    bool $loadMenu = true
+    bool $loadMenu = true,
+    array $routeParams = []
 ) {
     return view(
         MAIN_VIEW,
@@ -28,6 +29,7 @@ function buildView(
             'title' => $pageTitle,
             'body' => $bodyComponentName,
             'loadMenu' => $loadMenu,
+            'routeParams' => $routeParams,
         ]
     );
 }
@@ -54,5 +56,23 @@ Route::get('documentacoes', function () {
         'documentacoes',
         'Sprint Up | Documentações',
         'src.documentacoes.documentacoes-body'
+    );
+});
+
+Route::get('roadmap', function () {
+    return buildView(
+        'roadmap',
+        'Sprint Up | Roadmap',
+        'src.roadmap.roadmap'
+    );
+});
+
+Route::get('roadmap-cliente/{equipe_id}', function ($equipe_id) {
+    return buildView(
+        'roadmap',
+        'Sprint Up | Roadmap - Visão do cliente',
+        'src.roadmap.roadmap',
+        false,
+        ['equipe_id' => $equipe_id]
     );
 });

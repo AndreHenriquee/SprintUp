@@ -10,6 +10,7 @@ class Page extends Component
     public $title;
     public $body;
     public $loadMenu;
+    public $routeParams;
 
     public function render()
     {
