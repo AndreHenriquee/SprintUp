@@ -50,6 +50,7 @@ class ColunaConteudo extends Component
                 ON t.relator_id = us2.id
             INNER JOIN estimativa_tarefa est
                 ON t.estimativa_tarefa_id = est.id
+            ORDER BY t.prioridade ASC
         SQL;
 
         return DB::select(

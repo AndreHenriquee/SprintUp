@@ -10,11 +10,12 @@
         </thead>
         <tbody>
             @foreach ($documentacoes[$tipo] as $documentacao)
-            <tr style="cursor:pointer">
+            <tr style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#modalDocument-{{$documentacao->id}}">
                 <th scope="row">{{$documentacao->referencia}}</th>
                 <td>{{$documentacao->titulo}}</td>
                 <td>{{date_format(date_create($documentacao->data_hora),"d/m/Y H:i:s")}}</td>
             </tr>
+            <livewire:src.documentacoes.document-modal :data="(array) $documentacao" :typeMap="$typeMap" />
             @endforeach
         </tbody>
     </table>

@@ -9,14 +9,14 @@
     </div>
     <hr class="opacity-100">
     <div class="row mb-3 rounded p-3" style="background-color:#f2f2f2">
-        <div class="h3 col-12">
-            Informações
+        <div class="col-12">
+            <div class="h3">Informações</div>
             <div class="row p-2 mt-3">
                 <livewire:src.documentacoes.collapse-document-list :tipo="'INFORMATION'" />
             </div>
         </div>
-        <div class="h3 col-12">
-            Registros de cerimônias
+        <div class="col-12">
+            <div class="h3">Registros de cerimônias</div>
             <div class="row p-2 mt-3">
                 <livewire:src.documentacoes.collapse-document-list :tipo="'SPRINT_PLANNING'" />
                 <livewire:src.documentacoes.collapse-document-list :tipo="'DAILY_SCRUM'" />
