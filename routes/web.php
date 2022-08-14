@@ -78,3 +78,13 @@ Route::get('roadmap-cliente/{equipe_id}/{produto_id?}', function ($equipe_id,  $
         ['equipe_id' => $equipe_id, 'produto_id' => $produto_id]
     );
 });
+
+Route::get('procurar-documentos/{documentacao_tipo?}', function ($documentacao_tipo = null) {
+    return buildView(
+        'documentacao',
+        'Sprint Up | Documentos',
+        'src.documentacoes.documentacoes-body',
+        true,
+        ['documentacao_tipo' => $documentacao_tipo]
+    );
+});

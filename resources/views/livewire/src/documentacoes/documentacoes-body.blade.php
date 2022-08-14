@@ -15,7 +15,18 @@
                 <input class="form-control" type="search" placeholder="Buscar" id="buscar">
             </div>
             <div class="col-auto">
-                <livewire:src.documentacoes.document-filter />
+            <select wire:model="selectedDocumentId" class="form-select" id="documentSelect">
+                <option value="0">Filtrar por documentação</option>
+                <option value="{{$document->id}}">
+                    {{$document->nome}}
+                </option>
+            </select>
+            <script>
+                document.addEventListener('livewire:load', function() {
+                    var selectedProduct = "{{$routeParams['documentacao_tipo']}}";
+                    document.getElementById('documentSelect').value = selectedDocument == "" ? 0 : selectedDocument;
+                });
+            </script>
             </div>
             <div class="col-auto">
                 <input type="date" class="form-control" id="">
