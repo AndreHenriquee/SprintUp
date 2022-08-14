@@ -13,6 +13,28 @@
         </div>
     </div>
     <hr class="opacity-100">
+    <div class="row mb-3">
+        <div class="col-auto">
+            <select wire:model="selectedProductId" class="form-select" id="productSelect">
+                <option value="0">Filtrar por produto</option>
+                @foreach($products as $product)
+                <option value="{{$product->id}}">
+                    {{$product->nome}}
+                </option>
+                @endforeach
+            </select>
+
+            <script>
+                document.addEventListener('livewire:load', function() {
+                    var selectedProduct = "{{$routeParams['produto_id']}}";
+                    document.getElementById('productSelect').value = selectedProduct == "" ? 0 : selectedProduct;
+                });
+            </script>
+        </div>
+        <div class="col-auto">
+            <button wire:click="updateFilter" type="submit" class="btn btn-primary btn-dark">Buscar</button>
+        </div>
+    </div>
     <div class="row mb-3 rounded p-3" style="background-color:#f2f2f2">
         <livewire:src.roadmap.collapse-roadmap-section :features="$features" :tipo="'TO_DO'" />
         <livewire:src.roadmap.collapse-roadmap-section :features="$features" :tipo="'DOING'" />

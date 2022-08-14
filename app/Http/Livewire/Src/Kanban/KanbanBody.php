@@ -7,6 +7,7 @@ use Livewire\Component;
 
 class KanbanBody extends Component
 {
+    public $alias;
     public $data;
     public $columns;
 

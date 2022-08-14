@@ -5,11 +5,15 @@ namespace App\Http\Livewire\Src\Roadmap;
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 
-class Roadmap extends Component
+class RoadmapBody extends Component
 {
+    public $alias;
     public $routeParams;
     public $teamData;
     public $features;
+    public $products;
+
+    public $selectedProductId;
 
     public function render()
     {
@@ -21,14 +25,34 @@ class Roadmap extends Component
         $this->features = ['TO_DO' => [], 'DOING' => [], 'DONE' => []];
 
         if (isset($this->teamData['id'])) {
-            $this->features = self::fetchFeatures($this->teamData['id']);
+            $this->features = $this->fetchFeatures($this->teamData['id']);
         };
 
-        return view('livewire.src.roadmap.roadmap');
+        $this->products = self::fetchProcucts($this->teamData['id']);
+
+        return view('livewire.src.roadmap.roadmap-body');
     }
 
-    private function fetchTeamData($teamId, array $sessionParams)
+    public function updateFilter()
     {
+        if (!(int) $this->selectedProductId) {
+            return redirect('/' . $this->alias);
+        }
+
+        if ($this->alias == 'roadmap') {
+            return redirect(
+                '/' . implode('/', [$this->alias, $this->selectedProductId])
+            );
+        }
+
+        return redirect(
+            '/' . implode('/', [$this->alias, $this->teamData['id'], $this->selectedProductId])
+        );
+    }
+
+    private static function fetchTeamData($teamId, array $sessionParams)
+    {
+
         if (!$teamId) {
             $teamBySquadQuery = <<<SQL
                 SELECT
@@ -60,8 +84,18 @@ class Roadmap extends Component
         );
     }
 
-    private static function fetchFeatures(int $equipe_id)
+    private function fetchFeatures(int $equipe_id)
     {
+        $filter = '';
+
+        if ($this->routeParams['produto_id']) {
+            $filter .= <<<SQL
+                AND p.id = ?
+            SQL;
+
+            $params[] = $this->routeParams['produto_id'];
+        }
+
         $featuresQuery = <<<SQL
             SELECT
                 f.id
@@ -92,24 +126,42 @@ class Roadmap extends Component
             FROM funcionalidade f
             JOIN produto p
                 ON f.produto_id = p.id
+                {$filter}
             JOIN equipe e
                 ON p.equipe_id = e.id
                 AND e.id = ?
                 AND e.roadmap_ativo = 1
-            ORDER BY f.data_fim DESC
+            ORDER BY p.nome ASC, f.data_fim DESC
         SQL;
 
-        $features = DB::select(
-            $featuresQuery,
-            [$equipe_id],
-        );
+        $params[] = $equipe_id;
+
+        $features = DB::select($featuresQuery, $params);
 
         $groupedFeatures = ['TO_DO' => [], 'DOING' => [], 'DONE' => []];
 
         foreach ($features as $feature) {
-            $groupedFeatures[$feature->status][] = $feature;
+            $groupedFeatures[$feature->status]['product-' . $feature->produto_id]['product-name'] = $feature->produto_nome;
+            $groupedFeatures[$feature->status]['product-' . $feature->produto_id]['product-features'][] = $feature;
         }
 
         return $groupedFeatures;
+    }
+
+    private static function fetchProcucts(int $equipe_id)
+    {
+        $productsQuery = <<<SQL
+            SELECT
+                id
+                , nome
+            FROM produto
+            WHERE equipe_id = ?
+            ORDER BY nome ASC
+        SQL;
+
+        return (array) DB::select(
+            $productsQuery,
+            [$equipe_id],
+        );
     }
 }

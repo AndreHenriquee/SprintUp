@@ -10,7 +10,11 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($features as $feature)
+            @foreach ($features as $featureProduct)
+            <tr>
+                <td class="text-center text-muted" colspan="4">{{$featureProduct['product-name']}}</td>
+            </tr>
+            @foreach ($featureProduct['product-features'] as $feature)
             <tr style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#modalFeature-{{$feature->id}}">
                 <th scope="row">{{$feature->nome}}</th>
                 <td>{{date_format(date_create($feature->data_inicio),"d/m/Y")}}</td>
@@ -18,6 +22,7 @@
                 <td>{{$feature->porcentagem_conclusao}}%</td>
             </tr>
             <livewire:src.roadmap.feature-modal :data="(array) $feature" :status="$typeMap[$tipo]['titulo']" />
+            @endforeach
             @endforeach
         </tbody>
     </table>

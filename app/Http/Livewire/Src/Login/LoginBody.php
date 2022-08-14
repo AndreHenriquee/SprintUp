@@ -6,6 +6,7 @@ use Livewire\Component;
 
 class LoginBody extends Component
 {
+    public $alias;
     protected $listeners = ['mockLogin' => 'login'];
 
     public function render()
