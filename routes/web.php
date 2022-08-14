@@ -59,20 +59,22 @@ Route::get('documentacoes', function () {
     );
 });
 
-Route::get('roadmap', function () {
+Route::get('roadmap/{produto_id?}', function ($produto_id = null) {
     return buildView(
         'roadmap',
         'Sprint Up | Roadmap',
-        'src.roadmap.roadmap'
+        'src.roadmap.roadmap-body',
+        true,
+        ['produto_id' => $produto_id]
     );
 });
 
-Route::get('roadmap-cliente/{equipe_id}', function ($equipe_id) {
+Route::get('roadmap-cliente/{equipe_id}/{produto_id?}', function ($equipe_id,  $produto_id = null) {
     return buildView(
-        'roadmap',
+        'roadmap-cliente',
         'Sprint Up | Roadmap - Visão do cliente',
-        'src.roadmap.roadmap',
+        'src.roadmap.roadmap-body',
         false,
-        ['equipe_id' => $equipe_id]
+        ['equipe_id' => $equipe_id, 'produto_id' => $produto_id]
     );
 });

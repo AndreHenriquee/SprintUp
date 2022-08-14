@@ -9,13 +9,13 @@
     </div>
     <hr class="opacity-100">
     <div>
-    <div class="h3">Filtros</div>
-    <div class="row g-3 align-items-center">
-        <div class="col-auto">
-            <input class="form-control" type="search" placeholder="Buscar" id="buscar">
-        </div>
+        <div class="h3">Filtros</div>
+        <div class="row g-3 align-items-center">
             <div class="col-auto">
-                <livewire:src.documentacoes.document-filter/>
+                <input class="form-control" type="search" placeholder="Buscar" id="buscar">
+            </div>
+            <div class="col-auto">
+                <livewire:src.documentacoes.document-filter />
             </div>
             <div class="col-auto">
                 <input type="date" class="form-control" id="">

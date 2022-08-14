@@ -7,9 +7,9 @@
     <livewire:page.menu :alias="$alias" />
     @endif
     @if (empty($routeParams))
-    <livewire:is :component="$body" />
+    <livewire:is :component="$body" :alias="$alias" />
     @else
-    <livewire:is :component="$body" :routeParams="$routeParams" />
+    <livewire:is :component="$body" :alias="$alias" :routeParams="$routeParams" />
     @endif
     <script src="/js/app.js"></script>
     <livewire:scripts />
