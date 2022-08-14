@@ -12,19 +12,44 @@
                         <p class="text-wrap">{{$data['detalhamento']}}</p>
                     </div>
                     <div class="col-3 p-3 bg-light">
-                        <p class="text-wrap">Responsavel: {{$data['usuario_responsavel_nome']}}</p>
-                        <p class="text-wrap">Relator: {{$data['usuario_relator_nome']}}</p>
-                        <p class="text-wrap">Prioridade: {{$data['prioridade']}}</p>
-                        <p class="text-wrap">Status: {{$data['nome_coluna']}}</p>
-                        <p class="text-wrap">Estimativa: {{$data['estimativa']}}{{$data['extensao']}}</p>
-                        <p class="text-wrap">Criado em: {{$data['data_hora_criacao']}}</p>
-                        <p class="text-wrap">Atualizado em: {{$data['data_hora_ultima_movimentacao']}}</p>
+                        <p class="text-wrap"><b>Responsável:</b> {{$data['usuario_responsavel_nome']}}</p>
+                        <p class="text-wrap"><b>Relator:</b> {{$data['usuario_relator_nome']}}</p>
+                        <p class="text-wrap"><b>Prioridade:</b> {{$data['prioridade']}}</p>
+                        <p class="text-wrap"><b>Status:</b> {{$data['nome_coluna']}}</p>
+                        <p class="text-wrap"><b>Estimativa:</b> {{$data['estimativa']}}{{$data['extensao']}}</p>
+                        <p class="text-wrap"><b>Criado em:</b> {{date_format(date_create($data['data_hora_criacao']),"d/m/Y H:i:s")}}</p>
+                        <p class="text-wrap"><b>Atualizado em:</b> {{date_format(date_create($data['data_hora_ultima_movimentacao']),"d/m/Y H:i:s")}}</p>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div>
+                                    @if (isset($cardMentions['tarefas']))
+                                    <p class="text-wrap"><b>Menções de tarefas:</b></p>
+                                    @foreach($cardMentions['tarefas'] as $taskMentions)
+                                    <a href="kanban" class="d-inline-block mb-1 me-1 bg-secondary text-light h6 p-1 rounded" style="cursor:pointer; text-decoration: none;" title="{{$taskMentions->tarefa_referencia}} | {{$taskMentions->tarefa_titulo}}">
+                                        {{$taskMentions->tarefa_referencia}}
+                                    </a>
+                                    @endforeach
+                                    @endif
+                                </div>
+                                <div class="mt-2">
+                                    @if (isset($cardMentions['documentacoes']))
+                                    <p class="text-wrap"><b>Menções de documentações:</b></p>
+                                    @foreach($cardMentions['documentacoes'] as $documentMentions)
+                                    <a href="documentacoes" class="d-inline-block mb-1 me-1 bg-secondary text-light h6 p-1 rounded" style="cursor:pointer; text-decoration: none;" title="{{$documentMentions->documentacao_referencia}} | {{$documentMentions->documentacao_titulo}}">
+                                        {{$documentMentions->documentacao_referencia}}
+                                    </a>
+                                    @endforeach
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <!-- <div class="row">
-                    <b class="modal-title">Comentários</b>
-                </div> -->
             </div>
+            <!-- <div class="row">
+                <b class="modal-title">Comentários</b>
+            </div> -->
         </div>
     </div>
 </div>
