@@ -7,115 +7,122 @@ use Livewire\Component;
 
 class DocumentacoesBody extends Component
 {
-    
-    protected $alias;
+    public $listeners = ['validateRouteParams'];
+    public $alias;
     public $routeParams;
-    public $documents;
+    public $taskMentions;
+    public $memberMentions;
+
+    public $textFilter;
+    public $taskMentionIdFilter;
+    public $memberMentionIdFilter;
+    public $dateFilter;
 
     public function render()
     {
-
-        $this->squadData = self::fetchSquadData(
-            $this->routeParams['squad_id'] ?? null,
-            session('user_data')
-        ); 
-        
-        $this->documents = self::fetchDocuments($this->squadData['id'], session('user_data'));
+        $this->taskMentions = self::fetchTaskMentions(session('user_data'));
+        $this->memberMentions = self::fetchMemberMentions(session('user_data'));
 
         return view('livewire.src.documentacoes.documentacoes-body');
-    }    
-
-    public function updateFilter()
-    {
-        if (!(int) $this->selectedDocumentId) {
-            return redirect('/' . $this->alias);
-        }
-
-        if ($this->alias == 'documentacao') {
-            return redirect(
-                '/' . implode('/', [$this->alias, $this->selectedDocumentId])
-            );
-        }
-
-        return redirect(
-            '/' . implode('/', [$this->alias, $this->teamData['id'], $this->selectedDocumentId])
-        );
     }
 
-    public function fetchDocuments(int $squad_id, array $sessionParams) {
-        
-        $filter = '';
+    public function validateRouteParams()
+    {
+        $updateFilters = false;
 
-        if ($this->routeParams['documentacao_tipo']) {
-            $filter .= <<<SQL
-                AND d.tipo = ?
-            SQL;
-
-            $params[] = $this->routeParams['documentacao_tipo'];
+        if (
+            !in_array($this->routeParams['texto'], ['', 'null']) &&
+            !ctype_alpha($this->routeParams['texto'])
+        ) {
+            $this->textFilter = null;
+            $updateFilters = true;
         }
 
-        $documentsQuery = <<<SQL
-            SELECT
-                d.id
-                -- Pré-visualização
-                , d.referencia
-                , d.titulo
-                , d.data_hora
-                -- Detalhamento da documentação
-                , d.tipo
-                , d.conteudo
-            FROM documentacao d
-            JOIN squad s
-                ON s.id = ?
-            WHERE d.squad_id = ?
-                OR (
-                    d.squad_id IS NULL
-                    AND d.equipe_id = s.equipe_id
-                )
-            {$filter}
-            ORDER BY data_hora DESC
-        SQL;
-        
-        $documents = DB::select(
-            $documentsQuery,
-            [$sessionParams['squad_id'], $sessionParams['squad_id']], $params
-        );
+        if (
+            !in_array($this->routeParams['mencao_tarefa'], ['', 'null']) &&
+            !in_array((int) $this->routeParams['mencao_tarefa'], array_column($this->taskMentions, 'id'))
+        ) {
+            $this->taskMentionIdFilter = null;
+            $updateFilters = true;
+        }
 
-        return $documents;
+        if (
+            !in_array($this->routeParams['mencao_membro'], ['', 'null']) &&
+            !in_array((int) $this->routeParams['mencao_membro'], array_column($this->memberMentions, 'id'))
+        ) {
+            $this->memberMentionIdFilter = null;
+            $updateFilters = true;
+        }
+
+        $date = \DateTime::createFromFormat('Y-m-d', $this->routeParams['data']);
+
+        if (
+            !in_array($this->routeParams['data'], ['', 'null']) &&
+            !($date && $date->format('Y-m-d') === $date)
+        ) {
+            $this->dateFilter = null;
+            $updateFilters = true;
+        }
+
+        if ($updateFilters) {
+            self::updateFilters();
+        }
     }
 
-    private static function fetchSquadData($squadId, array $sessionParams)
+    public function updateFilters()
     {
+        $route = '/' . $this->alias . '/';
 
-        if (!$squadId) {
-            $teamBySquadQuery = <<<SQL
-                SELECT
-                    e.id
-                    , e.nome
-                FROM equipe e
-                JOIN squad s
-                    ON e.id = s.equipe_id
-                    AND s.id = ?
-            SQL;
+        $normalizedTextFilter = empty($this->textFilter) ? 'null' : $this->textFilter;
+        $normalizedTaskMentionIdFilter = empty($this->taskMentionIdFilter) ? 'null' : $this->taskMentionIdFilter;
+        $normalizedMemberMentionIdFilter = empty($this->memberMentionIdFilter) ? 'null' : $this->memberMentionIdFilter;
+        $normalizedDateFilter = empty($this->dateFilter) ? 'null' : $this->dateFilter;
 
-            return (array) DB::selectOne(
-                $teamBySquadQuery,
-                [$sessionParams['squad_id']],
-            );
-        }
+        $route .= implode('/', [
+            $normalizedTextFilter,
+            $normalizedTaskMentionIdFilter,
+            $normalizedMemberMentionIdFilter,
+            $normalizedDateFilter,
+        ]);
 
-        $teamByIdQuery = <<<SQL
+        return redirect($route);
+    }
+
+    private static function fetchTaskMentions(array $sessionParams)
+    {
+        $taskMentionsQuery = <<<SQL
             SELECT
                 id
-                , nome
-            FROM equipe
-            WHERE id = ?
+                , referencia
+                , titulo
+            FROM tarefa
+            WHERE squad_id = ?
+            ORDER BY titulo ASC
         SQL;
 
-        return (array) DB::selectOne(
-            $teamByIdQuery,
-            [$squadId],
+        return (array) DB::select(
+            $taskMentionsQuery,
+            [$sessionParams['squad_id']],
         );
     }
 
+    private static function fetchMemberMentions(array $sessionParams)
+    {
+        $taskMentionsQuery = <<<SQL
+            SELECT
+                u.id
+                , u.email
+                , u.nome
+            FROM usuario u
+            JOIN squad_usuario su
+                ON u.id = su.usuario_id
+                AND su.squad_id = ?
+            ORDER BY u.nome ASC
+        SQL;
+
+        return (array) DB::select(
+            $taskMentionsQuery,
+            [$sessionParams['squad_id']],
+        );
+    }
 }

@@ -51,11 +51,23 @@ Route::get('kanban', function () {
     );
 });
 
-Route::get('documentacoes', function () {
+Route::get('documentacoes/{texto?}/{mencao_tarefa?}/{mencao_membro?}/{data?}', function (
+    $texto = null,
+    $mencao_tarefa = null,
+    $mencao_membro = null,
+    $data = null
+) {
     return buildView(
         'documentacoes',
         'Sprint Up | Documentações',
-        'src.documentacoes.documentacoes-body'
+        'src.documentacoes.documentacoes-body',
+        true,
+        [
+            'texto' => $texto,
+            'mencao_tarefa' => $mencao_tarefa,
+            'mencao_membro' => $mencao_membro,
+            'data' => $data,
+        ]
     );
 });
 
@@ -76,15 +88,5 @@ Route::get('roadmap-cliente/{equipe_id}/{produto_id?}', function ($equipe_id,  $
         'src.roadmap.roadmap-body',
         false,
         ['equipe_id' => $equipe_id, 'produto_id' => $produto_id]
-    );
-});
-
-Route::get('procurar-documentos/{documentacao_tipo?}', function ($documentacao_tipo = null) {
-    return buildView(
-        'documentacao',
-        'Sprint Up | Documentos',
-        'src.documentacoes.documentacoes-body',
-        true,
-        ['documentacao_tipo' => $documentacao_tipo]
     );
 });

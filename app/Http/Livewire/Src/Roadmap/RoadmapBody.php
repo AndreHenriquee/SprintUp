@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class RoadmapBody extends Component
 {
+    public $listeners = ['validateRouteParams'];
     public $alias;
     public $routeParams;
     public $teamData;
@@ -33,10 +34,29 @@ class RoadmapBody extends Component
         return view('livewire.src.roadmap.roadmap-body');
     }
 
+    public function validateRouteParams()
+    {
+        $updateFilters = false;
+
+        if (
+            !in_array($this->routeParams['produto_id'], ['', 'null']) &&
+            !in_array((int) $this->routeParams['produto_id'], array_column($this->products, 'id'))
+        ) {
+            $this->selectedProductId = 0;
+            $updateFilters = true;
+        }
+
+        if ($updateFilters) {
+            $this->updateFilter();
+        }
+    }
+
     public function updateFilter()
     {
         if (!(int) $this->selectedProductId) {
-            return redirect('/' . $this->alias);
+            return redirect(
+                '/' . implode('/', [$this->alias, $this->alias == 'roadmap' ? '' : $this->teamData['id']])
+            );
         }
 
         if ($this->alias == 'roadmap') {

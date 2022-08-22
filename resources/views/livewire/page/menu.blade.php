@@ -8,19 +8,19 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link {{$alias == 'kanban' ? 'active' : ''}}" aria-current="page" href="kanban">Quadro Kanban</a>
+                    <a class="nav-link {{$alias == 'kanban' ? 'active' : ''}}" aria-current="page" href="/kanban">Quadro Kanban</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{$alias == 'documentacoes' ? 'active' : ''}}" href="documentacoes">Documentações</a>
+                    <a class="nav-link {{$alias == 'documentacoes' ? 'active' : ''}}" href="/documentacoes">Documentações</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{$alias == 'roadmap' ? 'active' : ''}}" href="roadmap">Roadmap</a>
+                    <a class="nav-link {{$alias == 'roadmap' ? 'active' : ''}}" href="/roadmap">Roadmap</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Trocar squad
                     </a>
-                    <livewire:page.squad-list />
+                    <livewire:page.squad-list :alias="$alias" />
                 </li>
             </ul>
             <livewire:page.login-info />

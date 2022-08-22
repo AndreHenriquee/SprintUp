@@ -11,6 +11,11 @@ class DocumentList extends Component
     public $tipo;
     public $typeMap;
 
+    public $textFilter;
+    public $taskMentionIdFilter;
+    public $memberMentionIdFilter;
+    public $dateFilter;
+
     public function render()
     {
         $this->documentacoes = self::fetchDocuments(session('user_data'));
