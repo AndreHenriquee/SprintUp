@@ -83,7 +83,7 @@
                 var selectedDate = "{{$routeParams['data']}}";
 
                 var textFilterInput = document.getElementById('textFilterInput');
-                textFilterInput.value = ['', 'null'].includes(inputedText) ? "" : inputedText;
+                textFilterInput.value = ['', 'null'].includes(inputedText) ? '' : inputedText;
                 textFilterInput.dispatchEvent(new Event('input'));
 
                 selectedTaskMention = ['', 'null'].includes(selectedTaskMention) ? '' : selectedTaskMention;
@@ -118,16 +118,16 @@
         <div class="col-12">
             <div class="h3">Informações</div>
             <div class="row p-2 mt-3">
-                <livewire:src.documentacoes.collapse-document-list :tipo="'INFORMATION'" :textFilter="$textFilter" :taskMentionIdFilter="$taskMentionIdFilter" :memberMentionIdFilter="$memberMentionIdFilter" :dateFilter="$dateFilter" />
+                <livewire:src.documentacoes.collapse-document-list :tipo="'INFORMATION'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
             </div>
         </div>
         <div class="col-12">
             <div class="h3">Registros de cerimônias</div>
             <div class="row p-2 mt-3">
-                <livewire:src.documentacoes.collapse-document-list :tipo="'SPRINT_PLANNING'" :textFilter="$textFilter" :taskMentionIdFilter="$taskMentionIdFilter" :memberMentionIdFilter="$memberMentionIdFilter" :dateFilter="$dateFilter" />
-                <livewire:src.documentacoes.collapse-document-list :tipo="'DAILY_SCRUM'" :textFilter="$textFilter" :taskMentionIdFilter="$taskMentionIdFilter" :memberMentionIdFilter="$memberMentionIdFilter" :dateFilter="$dateFilter" />
-                <livewire:src.documentacoes.collapse-document-list :tipo="'SPRINT_REVIEW'" :textFilter="$textFilter" :taskMentionIdFilter="$taskMentionIdFilter" :memberMentionIdFilter="$memberMentionIdFilter" :dateFilter="$dateFilter" />
-                <livewire:src.documentacoes.collapse-document-list :tipo="'SPRINT_RETROSPECTIVE'" :textFilter="$textFilter" :taskMentionIdFilter="$taskMentionIdFilter" :memberMentionIdFilter="$memberMentionIdFilter" :dateFilter="$dateFilter" />
+                <livewire:src.documentacoes.collapse-document-list :tipo="'SPRINT_PLANNING'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
+                <livewire:src.documentacoes.collapse-document-list :tipo="'DAILY_SCRUM'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
+                <livewire:src.documentacoes.collapse-document-list :tipo="'SPRINT_REVIEW'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
+                <livewire:src.documentacoes.collapse-document-list :tipo="'SPRINT_RETROSPECTIVE'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
             </div>
         </div>
     </div>

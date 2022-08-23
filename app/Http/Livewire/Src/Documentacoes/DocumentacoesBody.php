@@ -7,6 +7,7 @@ use Livewire\Component;
 
 class DocumentacoesBody extends Component
 {
+    public $invalidSearchPattern = '/[^a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ0-9-' . '\s' . ']/u';
     public $listeners = ['validateRouteParams'];
     public $alias;
     public $routeParams;
@@ -32,7 +33,7 @@ class DocumentacoesBody extends Component
 
         if (
             !in_array($this->routeParams['texto'], ['', 'null']) &&
-            !ctype_alpha($this->routeParams['texto'])
+            preg_match($this->invalidSearchPattern, $this->routeParams['texto'])
         ) {
             $this->textFilter = null;
             $updateFilters = true;
@@ -58,7 +59,7 @@ class DocumentacoesBody extends Component
 
         if (
             !in_array($this->routeParams['data'], ['', 'null']) &&
-            !($date && $date->format('Y-m-d') === $date)
+            !($date && $date->format('Y-m-d') === $this->routeParams['data'])
         ) {
             $this->dateFilter = null;
             $updateFilters = true;
@@ -72,6 +73,8 @@ class DocumentacoesBody extends Component
     public function updateFilters()
     {
         $route = '/' . $this->alias . '/';
+
+        $this->textFilter = preg_replace($this->invalidSearchPattern, '', (string) $this->textFilter);
 
         $normalizedTextFilter = empty($this->textFilter) ? 'null' : $this->textFilter;
         $normalizedTaskMentionIdFilter = empty($this->taskMentionIdFilter) ? 'null' : $this->taskMentionIdFilter;
