@@ -26,7 +26,7 @@
                                     @if (isset($cardMentions['tarefas']))
                                     <p class="text-wrap"><b>Menções de tarefas:</b></p>
                                     @foreach($cardMentions['tarefas'] as $taskMentions)
-                                    <a href="kanban" class="d-inline-block mb-1 me-1 bg-secondary text-light h6 p-1 rounded" style="cursor:pointer; text-decoration: none;" title="{{$taskMentions->tarefa_referencia}} | {{$taskMentions->tarefa_titulo}}">
+                                    <a href="/kanban" class="d-inline-block mb-1 me-1 bg-secondary text-light h6 p-1 rounded" style="cursor:pointer; text-decoration: none;" title="{{$taskMentions->tarefa_referencia}} | {{$taskMentions->tarefa_titulo}}">
                                         {{$taskMentions->tarefa_referencia}}
                                     </a>
                                     @endforeach
@@ -36,7 +36,7 @@
                                     @if (isset($cardMentions['documentacoes']))
                                     <p class="text-wrap"><b>Menções de documentações:</b></p>
                                     @foreach($cardMentions['documentacoes'] as $documentMentions)
-                                    <a href="documentacoes" class="d-inline-block mb-1 me-1 bg-secondary text-light h6 p-1 rounded" style="cursor:pointer; text-decoration: none;" title="{{$documentMentions->documentacao_referencia}} | {{$documentMentions->documentacao_titulo}}">
+                                    <a href="/documentacoes/{{$documentMentions->documentacao_referencia}}/null/null/null" class="d-inline-block mb-1 me-1 bg-secondary text-light h6 p-1 rounded" style="cursor:pointer; text-decoration: none;" title="{{$documentMentions->documentacao_referencia}} | {{$documentMentions->documentacao_titulo}}">
                                         {{$documentMentions->documentacao_referencia}}
                                     </a>
                                     @endforeach

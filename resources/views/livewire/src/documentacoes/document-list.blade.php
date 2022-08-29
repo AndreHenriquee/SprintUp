@@ -1,4 +1,4 @@
-<div class="collapse p-3" id="collapseDocList-{{$tipo}}">
+<div class="collapse <?= $hasFilters && isset($documentacoes[$tipo]) ? 'show' : '' ?> p-3" id="collapseDocList-{{$tipo}}">
     @if (isset($documentacoes[$tipo]))
     <table class="table table-hover h5 rounded" style="background-color:#e6e6e6;">
         <thead>
