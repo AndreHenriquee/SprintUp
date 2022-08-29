@@ -7,6 +7,7 @@ use Livewire\Component;
 
 class SquadList extends Component
 {
+    public $alias;
     public $sessionParams;
     public $teamsAndSquads;
 
@@ -68,6 +69,6 @@ class SquadList extends Component
             ],
         ]);
 
-        return redirect(request()->header('Referer'));
+        return redirect('/' . $this->alias);
     }
 }

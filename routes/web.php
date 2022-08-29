@@ -51,11 +51,23 @@ Route::get('kanban', function () {
     );
 });
 
-Route::get('documentacoes', function () {
+Route::get('documentacoes/{texto?}/{mencao_tarefa?}/{mencao_membro?}/{data?}', function (
+    $texto = null,
+    $mencao_tarefa = null,
+    $mencao_membro = null,
+    $data = null
+) {
     return buildView(
         'documentacoes',
         'Sprint Up | Documentações',
-        'src.documentacoes.documentacoes-body'
+        'src.documentacoes.documentacoes-body',
+        true,
+        [
+            'texto' => $texto,
+            'mencao_tarefa' => $mencao_tarefa,
+            'mencao_membro' => $mencao_membro,
+            'data' => $data,
+        ]
     );
 });
 

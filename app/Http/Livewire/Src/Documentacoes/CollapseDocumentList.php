@@ -7,11 +7,24 @@ use Livewire\Component;
 class CollapseDocumentList extends Component
 {
     public $tipo;
+    public $textFilter;
+    public $taskMentionIdFilter;
+    public $memberMentionIdFilter;
+    public $dateFilter;
+
     public $typeMap;
+    public $unifiedFilters;
 
     public function render()
     {
         $this->typeMap = self::fetchTypeMap();
+
+        $this->unifiedFilters = [
+            'textFilter' => $this->textFilter == 'null' ? '' : $this->textFilter,
+            'taskMentionIdFilter' => $this->taskMentionIdFilter == 'null' ? '' : $this->taskMentionIdFilter,
+            'memberMentionIdFilter' => $this->memberMentionIdFilter == 'null' ? '' : $this->memberMentionIdFilter,
+            'dateFilter' => $this->dateFilter == 'null' ? '' : $this->dateFilter,
+        ];
 
         return view('livewire.src.documentacoes.collapse-document-list');
     }

@@ -1,8 +1,13 @@
-<div class="container {{empty($routeParams) ? '' : 'pt-4'}}">
+<div class="container {{!isset($routeParams['equipe_id']) ? '' : 'pt-4'}}">
     @if (empty($features['TO_DO']) && empty($features['DOING']) && empty($features['DONE']))
     <div class="alert alert-warning mt-5" role="alert">
         Esta equipe não tem nenhuma funcionalidade para mostrar
     </div>
+    <script>
+        document.addEventListener('livewire:load', function() {
+            Livewire.emit('validateRouteParams');
+        });
+    </script>
     @else
     <div class="row">
         <div title="Roadmap | {{$teamData['nome']}}" class="h1 col-5 pe-3 text-truncate border-end border-dark">
@@ -23,17 +28,20 @@
                 </option>
                 @endforeach
             </select>
-
-            <script>
-                document.addEventListener('livewire:load', function() {
-                    var selectedProduct = "{{$routeParams['produto_id']}}";
-                    document.getElementById('productSelect').value = selectedProduct == "" ? 0 : selectedProduct;
-                });
-            </script>
         </div>
         <div class="col-auto">
             <button wire:click="updateFilter" type="submit" class="btn btn-primary btn-dark">Buscar</button>
         </div>
+
+        <script>
+            document.addEventListener('livewire:load', function() {
+                var selectedProduct = "{{$routeParams['produto_id']}}";
+                document.getElementById('productSelect').value = selectedProduct == "" ? 0 : selectedProduct;
+                document.getElementById('productSelect').dispatchEvent(new Event('change'));
+
+                Livewire.emit('validateRouteParams');
+            });
+        </script>
     </div>
     <div class="row mb-3 rounded p-3" style="background-color:#f2f2f2">
         <livewire:src.roadmap.collapse-roadmap-section :features="$features" :tipo="'TO_DO'" />
