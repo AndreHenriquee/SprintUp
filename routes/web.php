@@ -43,6 +43,15 @@ Route::get('/', function () {
     );
 });
 
+Route::get('register', function () {
+    return buildView(
+        'register',
+        'Sprint Up | Cadastro',
+        'src.register.register-form',
+        false
+    );
+});
+
 Route::get('kanban', function () {
     return buildView(
         'kanban',
