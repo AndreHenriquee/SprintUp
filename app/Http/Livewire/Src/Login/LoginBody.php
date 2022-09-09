@@ -3,7 +3,6 @@
 namespace App\Http\Livewire\Src\Login;
 
 use Livewire\Component;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class LoginBody extends Component
@@ -17,21 +16,27 @@ class LoginBody extends Component
         return view('livewire.src.login.login-body');
     }
 
-    public function userValidated() {
-        $this->validate([ 
-            'email' => 'required|email', 
-            'senha' => 'required', 
-        ]); 
+    public function userValidated()
+    {
+        $this->validate([
+            'email' => 'required|email',
+            'senha' => 'required',
+        ]);
+
         return true;
     }
 
     public function createSession()
     {
-        $query = DB::table('squad_usuario')
-            ->join('usuario', 'squad_usuario.usuario_id', '=', 'usuario.id')
+        $query = DB::table('usuario')
+            ->join('squad_usuario', 'usuario.id', '=', 'squad_usuario.usuario_id')
             ->where('usuario.email', '=', $this->email)
             ->where('usuario.senha', '=', md5($this->senha))
-        ->first();
+            ->select(
+                'usuario.id AS usuario_id',
+                'squad_usuario.squad_id',
+            )
+            ->first();
 
         session([
             'user_data' => [
@@ -39,21 +44,22 @@ class LoginBody extends Component
                 'squad_id' => $query->squad_id
             ],
         ]);
+
         return redirect('/kanban');
     }
 
     public function login()
     {
-        if(self::userValidated()){  
-            if(DB::table('usuario')
+        if (self::userValidated()) {
+            if (DB::table('usuario')
                 ->where('email', $this->email)
                 ->where('senha', md5($this->senha))
-                ->exists()) 
-            {
-                Self::createSession();
+                ->exists()
+            ) {
+                self::createSession();
             } else {
-                return back()->with('error', 'Não encontramos nenhum cadastro associado');
+                return back()->with('error', 'Não encontramos nenhum cadastro a essas credenciais');
             }
-        }        
+        }
     }
 }
