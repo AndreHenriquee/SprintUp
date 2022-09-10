@@ -55,4 +55,16 @@ class LoginInfo extends Component
             ],
         ];
     }
+
+    public function logout()
+    {
+        session([
+            'user_data' => [
+                'usuario_id' => null,
+                'squad_id' => null,
+            ],
+        ]);
+
+        return redirect('/');
+    }
 }

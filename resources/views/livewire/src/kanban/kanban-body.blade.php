@@ -1,11 +1,13 @@
 <div class="container">
     <div class="row">
-        <div title="{{$data['nome']}}" class="h1 col-4 pe-3 text-truncate border-end border-dark">
+        <div title="{{$data['nome']}}" class="h1 col-<?= $data['descricao'] ? '4 border-end border-dark' : '12' ?> pe-3 text-truncate">
             {{$data['nome']}}
         </div>
+        @if($data['descricao'])
         <div title="{{$data['descricao']}}" class="col-8 my-auto text-truncate">
             {{$data['descricao']}}
         </div>
+        @endif
     </div>
     <hr class="opacity-100">
     <div class="row mb-3 rounded p-1" style="background-color:#f2f2f2">

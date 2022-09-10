@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class RegisterForm extends Component
 {
 
-    public $email, $senha, $nome, $data_nascimento;
+    public $email, $senha, $senha_confirmation, $nome, $data_nascimento;
     public $equipeId, $nomeEquipe, $descTime, $roadmapCheckbox = false;
     public $nomeSquad, $descSquad;
 
@@ -16,47 +16,33 @@ class RegisterForm extends Component
     {
         return view('livewire.src.register.register-form');
     }
-    public function createRef (String $nomeSquad) 
-    {
-        if(strpos($nomeSquad, " ")){
-            $nomeSquad = explode(" ", $nomeSquad);
-            
-            for ($i = 0; $i < count($nomeSquad); $i++) {
-                $referencia[] = (substr($nomeSquad[$i], 0, 1));
-            }
-            $referencia = implode("", $referencia);
-            
-            return strtoupper($referencia);
 
-        } else { return strtoupper($nomeSquad); }
-    }
-    
-    public function resetFields() 
+    public function resetFields()
     {
         $this->email = '';
-        $this->senha = ''; 
-        $this->nome = ''; 
+        $this->senha = '';
+        $this->senha_confirmation = '';
+        $this->nome = '';
         $this->data_nascimento = '';
         $this->nomeEquipe = '';
         $this->descTime = '';
-        $this->roadmapCheckbox = '';
+        $this->roadmapCheckbox = false;
         $this->nomeSquad = '';
         $this->descSquad = '';
     }
 
     public function fieldsValidation()
     {
-        $validation = $this->validate(
-            [ 
-                'nome' => 'required', 
-                'email' => 'required|email:rfc,dns|unique:usuario,email', 
-                'senha' => 'required|min:8', 
+        $this->validate(
+            [
+                'nome' => 'required',
+                'email' => 'required|email:rfc,dns|unique:usuario,email',
+                'senha' => 'required|confirmed|min:8',
                 'data_nascimento' => 'required|before_or_equal:01/01/2005',
                 'nomeEquipe' => 'required|unique:equipe,nome',
-                'nomeSquad' => 'required|unique:squad,nome' 
+                'nomeSquad' => 'required'
             ],
             [
-                'nomeSquad.unique' => 'Nome de squad já existe',
                 'nomeSquad.required' => 'Nome da squad é obrigatório',
                 'nomeEquipe.unique' => 'Nome da equipe já existe',
                 'nomeEquipe.required' => 'Nome da equipe é obrigatório',
@@ -66,9 +52,11 @@ class RegisterForm extends Component
                 'email.required' => 'E-mail é obrigatório',
                 'email.email' => 'E-mail em formato inválido',
                 'senha.required' => 'Senha é obrigatório',
+                'senha.confirmed' => 'A senha e a sua confirmação não são idênticas',
                 'senha.min' => 'Senha deve ser maior que 8 caracteres'
             ],
-        ); 
+        );
+
         return true;
     }
 
@@ -80,19 +68,52 @@ class RegisterForm extends Component
                 'squad_id' => $squad_id,
             ],
         ]);
-        return redirect('/kanban');
     }
-    
+
+    private static function createRef(String $nomeSquad)
+    {
+        if (strpos($nomeSquad, " ")) {
+            $nomeSquad = preg_split("/[\s,_-]+/", $nomeSquad);
+
+            $referencia = '';
+
+            foreach ($nomeSquad as $letra) {
+                $referencia .= mb_substr($letra, 0, 1);
+            }
+
+            return strtoupper($referencia);
+        } else {
+            return strtoupper($nomeSquad);
+        }
+    }
+
+    private function createBoard(Int $squadId)
+    {
+        $board = [
+            $kanbanId = DB::table('quadro_kanban')->insertGetId([
+                'nome' => 'Quadro Kanban | ' . $this->nomeSquad,
+                'squad_id' => $squadId,
+            ]),
+
+            DB::table('coluna')->insert(array(
+                array('nome' => "To Do", 'ordem' => 1, 'inicio_tarefa' => 1, 'fim_tarefa' => 0, 'quadro_kanban_id' => $kanbanId),
+                array('nome' => "Doing", 'ordem' => 2, 'inicio_tarefa' => 0, 'fim_tarefa' => 0, 'quadro_kanban_id' => $kanbanId),
+                array('nome' => "Done", 'ordem' => 3, 'inicio_tarefa' => 0, 'fim_tarefa' => 1, 'quadro_kanban_id' => $kanbanId)
+            )),
+        ];
+        return $board;
+    }
+
     public function registerUser()
-    {  
-        if(self::fieldsValidation()) {
+    {
+        if (self::fieldsValidation()) {
             $usuarioId = DB::table('usuario')->insertGetId([
                 'nome' => $this->nome,
                 'email' => $this->email,
                 'senha' => md5($this->senha),
-                'data_nascimento' => $this-> data_nascimento
+                'data_nascimento' => $this->data_nascimento
             ]);
-    
+
             $equipeId = DB::table('equipe')->insertGetId([
                 'nome' => $this->nomeEquipe,
                 'descricao' => $this->descTime,
@@ -106,14 +127,14 @@ class RegisterForm extends Component
                 'descricao' => $this->descSquad,
                 'referencia' => $squadRef,
                 'equipe_id' => $equipeId
-            ]); 
+            ]);
 
-            self::createBoard($squadId);
+            $this->createBoard($squadId);
 
             DB::table('squad_usuario')->insert([
                 'usuario_id' => $usuarioId,
                 'squad_id' => $squadId,
-                'cargo_id' => 3, 
+                'cargo_id' => 3,
             ]);
 
             DB::table('equipe_usuario')->insert([
@@ -122,26 +143,9 @@ class RegisterForm extends Component
                 'grupo_permissao_id' => 1,
             ]);
 
-            self::resetFields();
-            
             self::createSession($usuarioId, $squadId);
-        }    
-    }
 
-    public function createBoard(Int $squadId)
-    {
-        $board = [
-            $kanbanId = DB::table('quadro_kanban')->insertGetId([
-                'nome' => $this->nomeSquad,
-                'squad_id' => $squadId,
-            ]),
-
-            DB::table('coluna')->insert(array(
-                array('nome' => "To Do", 'ordem' => 1, 'inicio_tarefa' => 1, 'fim_tarefa' => 0, 'quadro_kanban_id' => $kanbanId),
-                array('nome' => "Doing", 'ordem' => 2, 'inicio_tarefa' => 0, 'fim_tarefa' => 0, 'quadro_kanban_id' => $kanbanId),
-                array('nome' => "Done", 'ordem' => 3, 'inicio_tarefa' => 0, 'fim_tarefa' => 1, 'quadro_kanban_id' => $kanbanId)
-            )),
-        ];
-        return $board;
+            return redirect('/kanban');
+        }
     }
 }
