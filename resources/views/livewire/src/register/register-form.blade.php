@@ -16,13 +16,13 @@
                         <input type="date" class="form-control mt-1" wire:model="data_nascimento">
                     </div>
                     @error('data_nascimento') <span class=" text-danger">{{ $message }}</span> @enderror
-
                 </div>
                 <div class="card-body border-end border-light" id="teamForm">
                     <span class="h2 col-8 my-auto text-truncate">Crie uma equipe</span>
                     <input type="text" wire:model="nomeEquipe" class="form-control mt-4" placeholder="Nome da Equipe" />
                     @error('nomeEquipe') <span class="text-danger error">{{ $message }}</span> @enderror
                     <input type="text" wire:model="descTime" class="form-control my-4 py-2" placeholder="Descrição breve da equipe" />
+                    @error('descTime') <span class="text-danger error">{{ $message }}</span> @enderror
                     <div class="form-check">
                         Deseja criar um Roadmap para sua equipe?
                         <input type="checkbox" wire:model="roadmapCheckbox" class="form-check-input">
@@ -33,6 +33,7 @@
                     <input type="text" wire:model="nomeSquad" class="form-control mt-4" placeholder="Nome da Squad" />
                     @error('nomeSquad') <span class="text-danger error">{{ $message }}</span> @enderror
                     <input type="text" wire:model="descSquad" class="form-control my-4 py-2" placeholder="Descrição breve da Squad" />
+                    @error('descSquad') <span class="text-danger error">{{ $message }}</span> @enderror
                     <div class="text-center mt-3">
                         <button wire:click="registerUser" class="btn btn-dark">Realizar Cadastro</button>
                         <input type="button" wire:click="resetFields" class="btn btn-secondary" value="Limpar campos" />

@@ -99,3 +99,19 @@ Route::get('roadmap-cliente/{equipe_id}/{produto_id?}', function ($equipe_id,  $
         ['equipe_id' => $equipe_id, 'produto_id' => $produto_id]
     );
 });
+
+Route::get('equipes', function () {
+    return buildView(
+        'equipes',
+        'Sprint Up | Equipes',
+        'src.team.team-body'
+    );
+});
+
+Route::get('nova-equipe', function () {
+    return buildView(
+        'nova-equipe',
+        'Sprint Up | Nova equipee',
+        'src.new-team.new-team-body'
+    );
+});
