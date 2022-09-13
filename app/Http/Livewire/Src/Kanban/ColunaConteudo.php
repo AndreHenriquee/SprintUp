@@ -41,15 +41,15 @@ class ColunaConteudo extends Component
                 , us2.foto AS usuario_relator_foto
                 , us2.nome AS usuario_relator_nome
             FROM tarefa t
-            INNER JOIN coluna col
+            LEFT JOIN coluna col
                 ON t.coluna_id = col.id
-                AND col.id = ?
-            INNER JOIN usuario us1
+            LEFT JOIN usuario us1
                 ON t.responsavel_id = us1.id
             INNER JOIN usuario us2
                 ON t.relator_id = us2.id
-            INNER JOIN estimativa_tarefa est
+            LEFT JOIN estimativa_tarefa est
                 ON t.estimativa_tarefa_id = est.id
+            WHERE col.id = ?
             ORDER BY t.prioridade ASC
         SQL;
 

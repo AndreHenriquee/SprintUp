@@ -52,11 +52,29 @@ Route::get('register', function () {
     );
 });
 
+Route::get('recovery', function () {
+    return buildView(
+        'recovery',
+        'Sprint Up | Recuperação de senha',
+        'src.login.account-recovery',
+        false
+    );
+});
+
+
 Route::get('kanban', function () {
     return buildView(
         'kanban',
         'Sprint Up | Kanban',
         'src.kanban.kanban-body'
+    );
+});
+
+Route::get('kanban/create-card', function () {
+    return buildView(
+        'kanban',
+        'Sprint Up | Kanban',
+        'src.kanban.create-card'
     );
 });
 

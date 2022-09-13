@@ -8,13 +8,11 @@ use Illuminate\Support\Facades\DB;
 class CardModal extends Component
 {
     public $data;
-
     public $cardMentions;
 
     public function render()
     {
         $this->cardMentions = self::fetchCardMentions((int) $this->data['id']);
-
         return view('livewire.src.kanban.card-modal');
     }
 
