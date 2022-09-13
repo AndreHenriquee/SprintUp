@@ -2,8 +2,14 @@
     <div class="card-body">
         <h5 class="card-title text-wrap" style="text-overflow: ellipsis">{{$data['titulo']}}</h5>
         <p class="card-text">{{$data['referencia']}}
+        @if($data['usuario_responsavel_nome'])
         <p>Responsável: {{$data['usuario_responsavel_nome']}}
+        @else
+        <p>Responsável: Nenhum
+        @endif
         <p>Relator: {{$data['usuario_relator_nome']}}
+        @if($data['estimativa'])
         <p>Estimativa: {{$data['estimativa']}}{{$data['extensao']}}
+        @endif
     </div>
 </div>

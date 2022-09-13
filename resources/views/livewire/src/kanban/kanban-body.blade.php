@@ -8,6 +8,11 @@
             {{$data['descricao']}}
         </div>
         @endif
+        <div>
+            <a href="/kanban/create-card">
+                <button class="col-2 btn btn-dark mt-3 mb-3">Criar Card</button>
+            </a>
+        </div>
     </div>
     <hr class="opacity-100">
     <div class="row mb-3 rounded p-1" style="background-color:#f2f2f2">

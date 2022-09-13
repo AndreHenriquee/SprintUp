@@ -9,14 +9,21 @@
                 <div class="row">
                     <b class="modal-title">Descrição</b>
                     <div class="col-sm-9 p-3">
-                        <p class="text-wrap">{{$data['detalhamento']}}</p>
+                        <!--<textarea class="form-control" >{{$data['detalhamento']}}</textarea>-->
+                        <textarea class="form-control" rows="15" aria-label="With textarea" style="background-color:rgba(195, 195, 195, 0.35);border:none;">
+                            {{$data['detalhamento']}}
+                        </textarea>
                     </div>
-                    <div class="col-3 p-3 bg-light">
-                        <p class="text-wrap"><b>Responsável:</b> {{$data['usuario_responsavel_nome']}}</p>
+                    <div class="col-3 mt-3 bg-light">
+                        @if($data['usuario_responsavel_nome'])
+                        <p><b>Responsável:</b> {{$data['usuario_responsavel_nome']}} @else <p><b>Responsável:</b> Nenhum
+                        @endif
                         <p class="text-wrap"><b>Relator:</b> {{$data['usuario_relator_nome']}}</p>
                         <p class="text-wrap"><b>Prioridade:</b> {{$data['prioridade']}}</p>
                         <p class="text-wrap"><b>Status:</b> {{$data['nome_coluna']}}</p>
-                        <p class="text-wrap"><b>Estimativa:</b> {{$data['estimativa']}}{{$data['extensao']}}</p>
+                        @if($data['estimativa'])
+                        <p><b>Estimativa:</b> {{$data['estimativa']}} @else <p><b>Estimativa:</b> Nenhuma
+                        @endif
                         <p class="text-wrap"><b>Criado em:</b> {{date_format(date_create($data['data_hora_criacao']),"d/m/Y H:i:s")}}</p>
                         <p class="text-wrap"><b>Atualizado em:</b> {{date_format(date_create($data['data_hora_ultima_movimentacao']),"d/m/Y H:i:s")}}</p>
 
