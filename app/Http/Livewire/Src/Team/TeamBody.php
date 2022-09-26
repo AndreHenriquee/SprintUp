@@ -29,12 +29,18 @@ class TeamBody extends Component
                     gp.nome,
                     CONCAT(gp.nome, " | Comum")
                 ) AS grupo_permissao
+                , p.permitido AS permissao_link_convite
             FROM equipe_usuario eu
             JOIN equipe e
                 ON eu.equipe_id = e.id
             JOIN grupo_permissao gp
                 ON eu.grupo_permissao_id = gp.id
+            JOIN permissao p
+                ON gp.id = p.grupo_permissao_id
+            JOIN tipo_permissao tp
+                ON p.tipo_permissao_id = tp.id
             WHERE eu.usuario_id = ?
+                AND tp.referencia = "[TEAM] CREATE_INVITE_LINK"
         SQL;
 
         return DB::select(

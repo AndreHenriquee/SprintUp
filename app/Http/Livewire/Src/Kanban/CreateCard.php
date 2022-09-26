@@ -30,51 +30,48 @@ class CreateCard extends Component
         $sessionParams = session('user_data');
         $contador = self::referenceCounter();
 
-        if(self::fieldsValidation()){
+        if (self::fieldsValidation()) {
             $taskInfo = DB::table('squad')
-            ->where('squad.id', '=', $sessionParams['squad_id'])
-            ->select('squad.referencia as referencia')
-            ->first();
-            
-        DB::table('tarefa')->insert([
-            'referencia' => $taskInfo->referencia.$contador,
-            'titulo' => $this->titulo,
-            'detalhamento' => $this->descricao,
-            'prioridade' => 1,
-            'data_hora_criacao' => Carbon::now('America/Sao_Paulo'),
-            'data_hora_ultima_movimentacao' => Carbon::now('America/Sao_Paulo'),
-            'coluna_id' => 1,
-            'squad_id' => $sessionParams['squad_id'],
-            'responsavel_id' => $this->taskOwnerId,
-            'relator_id' => $sessionParams['usuario_id'],
-        ]);
+                ->where('squad.id', '=', $sessionParams['squad_id'])
+                ->select('squad.referencia as referencia')
+                ->first();
+
+            DB::table('tarefa')->insert([
+                'referencia' => $taskInfo->referencia . $contador,
+                'titulo' => $this->titulo,
+                'detalhamento' => $this->descricao,
+                'prioridade' => 1,
+                'data_hora_criacao' => Carbon::now('America/Sao_Paulo'),
+                'data_hora_ultima_movimentacao' => Carbon::now('America/Sao_Paulo'),
+                'coluna_id' => 1,
+                'squad_id' => $sessionParams['squad_id'],
+                'responsavel_id' => $this->taskOwnerId,
+                'relator_id' => $sessionParams['usuario_id'],
+            ]);
 
             return redirect('/kanban');
         }
-
-        
     }
 
-    public function referenceCounter ()
+    public function referenceCounter()
     {
         $sessionParams = session('user_data');
         $referencia = "";
 
-        $referenciaQuery = 
-        DB::table('tarefa')
+        $referenciaQuery =
+            DB::table('tarefa')
             ->select('referencia')
             ->where('squad_id', '=', $sessionParams['squad_id'])
             ->orderByDesc('referencia')
             ->limit(1);
-                        
-        if(!$referenciaQuery->count() > 0){
+
+        if (!$referenciaQuery->count() > 0) {
             $referencia .= "-1";
-        }
-        else {
+        } else {
             $stringArray = explode("-", $referenciaQuery->first()->referencia);
             $contador = $stringArray[1] + 1;
-            $referencia = "-".$contador;
-        }  
+            $referencia = "-" . $contador;
+        }
         return $referencia;
     }
 

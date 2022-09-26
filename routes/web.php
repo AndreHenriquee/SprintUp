@@ -126,10 +126,20 @@ Route::get('equipes', function () {
     );
 });
 
+Route::get('convite-equipe/{equipe_id}', function ($equipe_id) {
+    return buildView(
+        'convite-equipe',
+        'Sprint Up | Convite para a equipe',
+        'src.team-invite.team-invite-body',
+        true,
+        ['equipe_id' => $equipe_id]
+    );
+});
+
 Route::get('nova-equipe', function () {
     return buildView(
         'nova-equipe',
-        'Sprint Up | Nova equipee',
+        'Sprint Up | Nova equipe',
         'src.new-team.new-team-body'
     );
 });
