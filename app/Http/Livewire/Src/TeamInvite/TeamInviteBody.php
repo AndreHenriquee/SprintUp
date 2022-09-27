@@ -2,7 +2,9 @@
 
 namespace App\Http\Livewire\Src\TeamInvite;
 
+use App\Mail\InviteLinkEmail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class TeamInviteBody extends Component
@@ -11,7 +13,9 @@ class TeamInviteBody extends Component
     public $teamDataAndPermission;
     public $squads, $roles, $permissionGroups, $nowDateTime;
     public $squadId, $roleId, $permissionGroupId, $email;
+    public $squadName, $roleName, $permissionGroupName;
     public $inviteLink;
+    public $wasLinkCopied = false;
 
     public function render()
     {
@@ -126,11 +130,72 @@ class TeamInviteBody extends Component
         );
     }
 
+    private function registerInviteLink()
+    {
+        $existingHash = DB::selectOne(
+            <<<SQL
+                SELECT
+                    id
+                FROM link_convite
+                WHERE hash = ?
+            SQL,
+            [$this->inviteLink]
+        );
+
+        if (empty($existingHash)) {
+            DB::table('link_convite')->insert([
+                [
+                    'hash' => $this->inviteLink,
+                    'ativo' => 1,
+                    'copiado' => $this->wasLinkCopied,
+                    'emails_enviados' => trim($this->email),
+                    'squad_id' => $this->squadId,
+                    'cargo_id' => $this->roleId,
+                    'grupo_permissao_id' => $this->permissionGroupId,
+                ]
+            ]);
+        }
+    }
+
+    private function getNameFromSelection(array $options, int $selected)
+    {
+        foreach ($options as $o) {
+            if ($o['id'] == $selected) {
+                return $o['nome'];
+            }
+        }
+    }
+
+    private function sendEmail()
+    {
+        $teamName = $this->teamDataAndPermission['nome'];
+        $squadName = $this->getNameFromSelection($this->squads, (int) $this->squadId);
+        $roleName = $this->getNameFromSelection($this->roles, (int) $this->roleId);
+        $permissionGroupName = $this->getNameFromSelection($this->permissionGroups, (int) $this->permissionGroupId);
+
+        Mail::to(trim($this->email))
+            ->send(
+                new InviteLinkEmail([
+                    'equipe_nome' => $teamName,
+                    'squad_nome' => $squadName,
+                    'cargo_nome' => $roleName,
+                    'grupo_permissao_nome' => $permissionGroupName,
+                    'email' => trim($this->email),
+                    'hash' => $this->inviteLink,
+                ])
+            );
+    }
+
     public function copyLink()
     {
         if (self::dataValidated()) {
-            $this->generateInviteLink();
-            // $this->registerInviteLink();
+            $this->wasLinkCopied = true;
+
+            if (empty($this->inviteLink)) {
+                $this->generateInviteLink();
+            }
+
+            $this->registerInviteLink();
             $this->emit('copyLinkToClipboard', $this->inviteLink);
         }
     }
@@ -138,8 +203,13 @@ class TeamInviteBody extends Component
     public function sendLinkByEmail()
     {
         if (self::dataValidated(true)) {
-            // $this->registerInviteLink();
-            $this->generateInviteLink();
+            if (empty($this->inviteLink)) {
+                $this->generateInviteLink();
+            }
+
+            $this->registerInviteLink();
+            $this->sendEmail();
+            $this->emit('inviteLinkSendedToEmail');
         }
     }
 }
