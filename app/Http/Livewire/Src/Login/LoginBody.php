@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 class LoginBody extends Component
 {
     public $alias;
+    public $routeParams;
     public $email, $senha;
     public $query;
 
@@ -44,6 +45,10 @@ class LoginBody extends Component
                 'squad_id' => $query->squad_id
             ],
         ]);
+
+        if (isset($this->routeParams['hash_convite']) && !empty($this->routeParams['hash_convite'])) {
+            return redirect('/aceitar-link-convite/' . trim($this->routeParams['hash_convite']));
+        }
 
         return redirect('/kanban');
     }

@@ -1,46 +1,26 @@
 <?php
 
-namespace App\Http\Livewire\Src\Register;
+namespace App\Http\Livewire\Src\NewTeam;
 
-use Livewire\Component;
 use Illuminate\Support\Facades\DB;
+use Livewire\Component;
 
-class RegisterForm extends Component
+class NewTeamBody extends Component
 {
-
-    public $email, $senha, $senha_confirmation, $nome, $data_nascimento;
-    public $equipeId, $nomeEquipe, $descTime, $roadmapCheckbox = false;
+    public $nomeEquipe, $descEquipe, $roadmapCheckbox = false;
     public $nomeSquad, $descSquad;
 
     public function render()
     {
-        return view('livewire.src.register.register-form');
-    }
-
-    public function resetFields()
-    {
-        $this->email = '';
-        $this->senha = '';
-        $this->senha_confirmation = '';
-        $this->nome = '';
-        $this->data_nascimento = '';
-        $this->nomeEquipe = '';
-        $this->descTime = '';
-        $this->roadmapCheckbox = false;
-        $this->nomeSquad = '';
-        $this->descSquad = '';
+        return view('livewire.src.new-team.new-team-body');
     }
 
     public function fieldsValidation()
     {
         $this->validate(
             [
-                'nome' => 'required',
-                'email' => 'required|email:rfc,dns|unique:usuario,email',
-                'senha' => 'required|confirmed|min:8',
-                'data_nascimento' => 'required|before_or_equal:01/01/2005',
                 'nomeEquipe' => 'required|min:3|max:50|unique:equipe,nome',
-                'descTime' => 'max:250',
+                'descEquipe' => 'max:250',
                 'nomeSquad' => 'required|min:3|max:50',
                 'descSquad' => 'max:250',
             ],
@@ -49,33 +29,15 @@ class RegisterForm extends Component
                 'nomeEquipe.min' => 'Nome da equipe precisa ter no mínio 3 caracteres',
                 'nomeEquipe.max' => 'Nome da equipe precisa ter no máximo 50 caracteres',
                 'nomeEquipe.unique' => 'Nome da equipe já existe',
-                'descTime.max' => 'Descrição da equipe precisa ter no máximo 250 caracteres',
+                'descEquipe.max' => 'Descrição da equipe precisa ter no máximo 250 caracteres',
                 'nomeSquad.required' => 'Nome da squad é obrigatório',
                 'nomeSquad.min' => 'Nome da squad precisa ter no mínio 3 caracteres',
                 'nomeSquad.max' => 'Nome da squad precisa ter no máximo 50 caracteres',
                 'descSquad.max' => 'Descrição da squad precisa ter no máximo 250 caracteres',
-                'data_nascimento.before_or_equal' => 'Data de nascimento deve ser menor que 2005',
-                'data_nascimento.required' => 'Data de nascimento é obrigatória',
-                'email.unique' => 'E-mail já existe',
-                'email.required' => 'E-mail é obrigatório',
-                'email.email' => 'E-mail em formato inválido',
-                'senha.required' => 'Senha é obrigatório',
-                'senha.confirmed' => 'A senha e a sua confirmação não são idênticas',
-                'senha.min' => 'Senha deve ser maior que 8 caracteres'
             ],
         );
 
         return true;
-    }
-
-    public function createSession(Int $usuario_id, Int $squad_id)
-    {
-        session([
-            'user_data' => [
-                'usuario_id' => $usuario_id,
-                'squad_id' => $squad_id,
-            ],
-        ]);
     }
 
     private static function createRef(String $nomeSquad)
@@ -109,48 +71,48 @@ class RegisterForm extends Component
         ));
     }
 
-    public function registerUser()
+    public function registerTeam()
     {
         if (self::fieldsValidation()) {
-            $usuarioId = DB::table('usuario')->insertGetId([
-                'nome' => $this->nome,
-                'email' => $this->email,
-                'senha' => md5($this->senha),
-                'data_nascimento' => $this->data_nascimento
-            ]);
-
             $equipeId = DB::table('equipe')->insertGetId([
                 'nome' => $this->nomeEquipe,
-                'descricao' => $this->descTime,
+                'descricao' => $this->descEquipe,
                 'roadmap_ativo' => $this->roadmapCheckbox
             ]);
-
-            $squadRef = self::createRef($this->nomeSquad);
 
             $squadId = DB::table('squad')->insertGetId([
                 'nome' => $this->nomeSquad,
                 'descricao' => $this->descSquad,
-                'referencia' => $squadRef,
+                'referencia' => self::createRef($this->nomeSquad),
                 'equipe_id' => $equipeId
             ]);
 
             $this->createBoard($squadId);
 
+            $userId = session('user_data')['usuario_id'];
+
             DB::table('squad_usuario')->insert([
-                'usuario_id' => $usuarioId,
+                'usuario_id' => $userId,
                 'squad_id' => $squadId,
                 'cargo_id' => 3,
             ]);
 
             DB::table('equipe_usuario')->insert([
-                'usuario_id' => $usuarioId,
+                'usuario_id' => $userId,
                 'equipe_id' => $equipeId,
                 'grupo_permissao_id' => 1,
             ]);
 
-            self::createSession($usuarioId, $squadId);
-
-            return redirect('/kanban');
+            return redirect('/equipes');
         }
+    }
+
+    public function resetFields()
+    {
+        $this->nomeEquipe = '';
+        $this->descEquipe = '';
+        $this->roadmapCheckbox = false;
+        $this->nomeSquad = '';
+        $this->descSquad = '';
     }
 }

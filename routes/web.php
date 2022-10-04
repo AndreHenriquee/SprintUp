@@ -117,3 +117,49 @@ Route::get('roadmap-cliente/{equipe_id}/{produto_id?}', function ($equipe_id,  $
         ['equipe_id' => $equipe_id, 'produto_id' => $produto_id]
     );
 });
+
+Route::get('equipes', function () {
+    return buildView(
+        'equipes',
+        'Sprint Up | Equipes',
+        'src.team.team-body'
+    );
+});
+
+Route::get('convite-equipe/{equipe_id}', function ($equipe_id) {
+    return buildView(
+        'convite-equipe',
+        'Sprint Up | Convite para a equipe',
+        'src.team-invite.team-invite-body',
+        true,
+        ['equipe_id' => $equipe_id]
+    );
+});
+
+Route::get('aceitar-link-convite/{hash_convite}', function ($hash_convite) {
+    return buildView(
+        'aceitar-link-convite',
+        'Sprint Up | Aceitar convite para a equipe',
+        'src.team-invite-acception.team-invite-acception-body',
+        false,
+        ['hash_convite' => $hash_convite]
+    );
+});
+
+Route::get('/login/{hash_convite?}', function (string $hash_convite = '') {
+    return buildView(
+        'login',
+        'Sprint Up | Login',
+        'src.login.login-body',
+        false,
+        ['hash_convite' => $hash_convite]
+    );
+});
+
+Route::get('nova-equipe', function () {
+    return buildView(
+        'nova-equipe',
+        'Sprint Up | Nova equipe',
+        'src.new-team.new-team-body'
+    );
+});
