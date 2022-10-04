@@ -70,11 +70,16 @@
                     Livewire.on('copyLinkToClipboard', inviteLink => {
                         navigator.clipboard.writeText(window.location.host + '/aceitar-link-convite/' + inviteLink);
                         alert('Link copiado para a sua área de transferência.');
+                        window.location.href = '/equipes';
                     })
 
                     Livewire.on('inviteLinkSendedToEmail', () => {
                         alert('E-mail com o link de convite enviado com sucesso!');
                         window.location.href = '/equipes';
+                    })
+
+                    Livewire.on('alertNoPermission', () => {
+                        alert('Você não tem permissão para convidar pessoas desse grupo de permissões a essa equipe.');
                     })
                 });
             </script>
