@@ -64,17 +64,14 @@
                 </svg>
                 Copiar link
             </button>
-            <script>
-                document.addEventListener('livewire:load', function() {
-                    Livewire.on('copyLinkToClipboard', inviteLink => {
-                        navigator.clipboard.writeText(inviteLink);
-                        alert('Link copiado para a sua área de transferência.');
-                    })
-                });
-            </script>
             <button wire:click="sendLinkByEmail" type="button" class="btn btn-primary">Enviar convite para o e-mail</button>
             <script>
                 document.addEventListener('livewire:load', function() {
+                    Livewire.on('copyLinkToClipboard', inviteLink => {
+                        navigator.clipboard.writeText(window.location.host + '/aceitar-link-convite/' + inviteLink);
+                        alert('Link copiado para a sua área de transferência.');
+                    })
+
                     Livewire.on('inviteLinkSendedToEmail', () => {
                         alert('E-mail com o link de convite enviado com sucesso!');
                         window.location.href = '/equipes';

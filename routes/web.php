@@ -136,6 +136,26 @@ Route::get('convite-equipe/{equipe_id}', function ($equipe_id) {
     );
 });
 
+Route::get('aceitar-link-convite/{hash_convite}', function ($hash_convite) {
+    return buildView(
+        'aceitar-link-convite',
+        'Sprint Up | Aceitar convite para a equipe',
+        'src.team-invite-acception.team-invite-acception-body',
+        false,
+        ['hash_convite' => $hash_convite]
+    );
+});
+
+Route::get('/login/{hash_convite?}', function (string $hash_convite = '') {
+    return buildView(
+        'login',
+        'Sprint Up | Login',
+        'src.login.login-body',
+        false,
+        ['hash_convite' => $hash_convite]
+    );
+});
+
 Route::get('nova-equipe', function () {
     return buildView(
         'nova-equipe',

@@ -4,11 +4,12 @@
 
 <body class="bg-light">
     <?php
+    $sessionUserData = session('user_data');
     if (
         in_array($alias, ['login', 'register']) ||
-        (session('user_data') &&
-            session('user_data')['usuario_id'] &&
-            session('user_data')['squad_id']
+        ($sessionUserData &&
+            $sessionUserData['usuario_id'] &&
+            $sessionUserData['squad_id']
         )
     ) {
     ?>
@@ -22,7 +23,11 @@
         @endif
     <?php
     } else {
-        redirect('/');
+        if ($alias != 'aceitar-link-convite') {
+            redirect('/');
+        } else {
+            redirect('/login/' . $routeParams['hash_convite']);
+        }
     }
     ?>
     <script src="/js/app.js"></script>
