@@ -41,6 +41,7 @@ class TeamBody extends Component
                 ON p.tipo_permissao_id = tp.id
             WHERE eu.usuario_id = ?
                 AND tp.referencia = "[TEAM] CREATE_INVITE_LINK"
+            ORDER BY e.nome ASC
         SQL;
 
         return DB::select(
