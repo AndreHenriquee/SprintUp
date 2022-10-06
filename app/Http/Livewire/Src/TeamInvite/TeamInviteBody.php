@@ -101,6 +101,65 @@ class TeamInviteBody extends Component
         );
     }
 
+    private function validatePermissionManagement(array $sessionParams)
+    {
+        $permissionManagementQuery = <<<SQL
+            SELECT
+                tp.referencia AS permissao_referencia
+                , IF (
+                    tp.referencia = "[TEAM] MNG_MODERATORS_AND_COMMONS",
+                    p.permitido,
+                    NULL
+                ) AS permissao_moderador_comum
+                , IF (
+                    tp.referencia = "[TEAM] MNG_ADMINISTRATORS",
+                    p.permitido,
+                    NULL
+                ) AS permissao_administrador
+            FROM equipe_usuario eu
+            JOIN permissao p
+                ON eu.grupo_permissao_id = p.grupo_permissao_id
+            JOIN tipo_permissao tp
+                ON p.tipo_permissao_id = tp.id
+            WHERE eu.equipe_id = ?
+                AND eu.usuario_id = ?
+                AND tp.referencia IN (
+                    "[TEAM] MNG_MODERATORS_AND_COMMONS",
+                    "[TEAM] MNG_ADMINISTRATORS"
+                )
+        SQL;
+
+        $permissionManagement = DB::select(
+            $permissionManagementQuery,
+            [
+                $this->routeParams['equipe_id'],
+                $sessionParams['usuario_id'],
+            ],
+        );
+
+        $groupedPermissions = [];
+
+        foreach ($permissionManagement as $pm) {
+            if ($pm->permissao_referencia == '[TEAM] MNG_MODERATORS_AND_COMMONS') {
+                $groupedPermissions['permissao_moderador_comum'] = (int) $pm->permissao_moderador_comum;
+
+                continue;
+            }
+
+            if ($pm->permissao_referencia == '[TEAM] MNG_ADMINISTRATORS') {
+                $groupedPermissions['permissao_administrador'] = (int) $pm->permissao_administrador;
+
+                continue;
+            }
+        }
+
+        if ((int) $this->permissionGroupId == 1) {
+            return $groupedPermissions['permissao_administrador'];
+        }
+
+        return $groupedPermissions['permissao_moderador_comum'];
+    }
+
     private function dataValidated(bool $includeEmailValidation = false)
     {
         $rules = [
@@ -114,6 +173,12 @@ class TeamInviteBody extends Component
         }
 
         $this->validate($rules);
+
+        if (!$this->validatePermissionManagement(session('user_data'))) {
+            $this->emit('alertNoPermission');
+
+            return false;
+        }
 
         return true;
     }

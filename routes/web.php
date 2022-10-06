@@ -136,6 +136,16 @@ Route::get('convite-equipe/{equipe_id}', function ($equipe_id) {
     );
 });
 
+Route::get('membros-equipe/{equipe_id}', function ($equipe_id) {
+    return buildView(
+        'membros-equipe',
+        'Sprint Up | Membros da equipe',
+        'src.team-members.team-members-body',
+        true,
+        ['equipe_id' => $equipe_id]
+    );
+});
+
 Route::get('aceitar-link-convite/{hash_convite}', function ($hash_convite) {
     return buildView(
         'aceitar-link-convite',
