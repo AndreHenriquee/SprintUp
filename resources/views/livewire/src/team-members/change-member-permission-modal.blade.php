@@ -11,7 +11,7 @@
                 <div class="row">
                     <div class="col-12">
                         <select wire:model="permissionGroupId" class="form-select">
-                            <option value="0">Squad do convidado</option>
+                            <option value="0">Novo grupo de permissões</option>
                             @foreach($permissionGroups as $permissionGroup)
 
                             @if(

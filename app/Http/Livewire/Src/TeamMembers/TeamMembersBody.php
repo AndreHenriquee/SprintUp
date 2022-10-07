@@ -43,6 +43,24 @@ class TeamMembersBody extends Component
                     WHERE p2.grupo_permissao_id = eu.grupo_permissao_id
                         AND tp2.referencia = "[TEAM] MNG_ADMINISTRATORS"
                 ) AS permissao_grupo_administrador
+                , (
+                    SELECT
+                        p3.permitido
+                    FROM permissao p3
+                    JOIN tipo_permissao tp3
+                        ON p3.tipo_permissao_id = tp3.id
+                    WHERE p3.grupo_permissao_id = eu.grupo_permissao_id
+                        AND tp3.referencia = "[USER_ACCESS] MNG_MODERATORS_AND_COMMONS_ROLES"
+                ) AS permissao_papel_moderador_comum
+                , (
+                    SELECT
+                        p4.permitido
+                    FROM permissao p4
+                    JOIN tipo_permissao tp4
+                        ON p4.tipo_permissao_id = tp4.id
+                    WHERE p4.grupo_permissao_id = eu.grupo_permissao_id
+                        AND tp4.referencia = "[USER_ACCESS] MNG_ADMINISTRATORS_ROLES"
+                ) AS permissao_papel_administrador
             FROM equipe e
             JOIN equipe_usuario eu
                 ON e.id = eu.equipe_id
