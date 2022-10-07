@@ -30,8 +30,8 @@
                     <td>
                         @if(
                         $sessionParams['usuario_id'] != $teamMember->id &&
-                        (($teamMember->grupo_permissao_id == 1 && $teamDataAndPermission['permissao_administrador']) ||
-                        ($teamMember->grupo_permissao_id != 1 && $teamDataAndPermission['permissao_moderador_comum']))
+                        (($teamMember->grupo_permissao_id == 1 && $teamDataAndPermission['permissao_grupo_administrador']) ||
+                        ($teamMember->grupo_permissao_id != 1 && $teamDataAndPermission['permissao_grupo_moderador_comum']))
                         )
                         <a title="Mudar permissões" class="text-dark me-3" style="cursor:pointer; text-decoration: none;" data-bs-toggle="modal" data-bs-target="#modalChangePermission-{{$teamMember->id}}">
                             <svg xmlns=" http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
@@ -39,7 +39,7 @@
                                 <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                             </svg>
                         </a>
-                        <livewire:src.team-members.change-member-permission-modal :memberData="(array) $teamMember" :teamId="(int) $routeParams['equipe_id']" :allowedGroups="['permissao_administrador' => $teamDataAndPermission['permissao_administrador'], 'permissao_moderador_comum' => $teamDataAndPermission['permissao_moderador_comum']]" />
+                        <livewire:src.team-members.change-member-permission-modal :memberData="(array) $teamMember" :teamId="(int) $routeParams['equipe_id']" :allowedGroups="['permissao_grupo_administrador' => $teamDataAndPermission['permissao_grupo_administrador'], 'permissao_grupo_moderador_comum' => $teamDataAndPermission['permissao_grupo_moderador_comum']]" />
                         @endif
                     </td>
                 </tr>

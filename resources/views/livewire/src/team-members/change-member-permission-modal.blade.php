@@ -15,8 +15,8 @@
                             @foreach($permissionGroups as $permissionGroup)
 
                             @if(
-                            ($permissionGroup->id == 1 && $allowedGroups['permissao_administrador']) ||
-                            ($permissionGroup->id != 1 && $allowedGroups['permissao_moderador_comum'])
+                            ($permissionGroup->id == 1 && $allowedGroups['permissao_grupo_administrador']) ||
+                            ($permissionGroup->id != 1 && $allowedGroups['permissao_grupo_moderador_comum'])
                             )
                             <option <?= $memberData['grupo_permissao_id'] == $permissionGroup->id ? 'disabled' : '' ?> value="{{$permissionGroup->id}}">
                                 {{$permissionGroup->nome}} <?= $memberData['grupo_permissao_id'] == $permissionGroup->id ? '(Grupo atual)' : '' ?>

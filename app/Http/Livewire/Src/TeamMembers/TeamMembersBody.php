@@ -32,8 +32,8 @@ class TeamMembersBody extends Component
                     JOIN tipo_permissao tp
                         ON p.tipo_permissao_id = tp.id
                     WHERE p.grupo_permissao_id = eu.grupo_permissao_id
-                        AND tp.referencia = '[USER_ACCESS] MNG_MODERATORS_AND_COMMONS_ROLES'
-                ) AS permissao_moderador_comum
+                        AND tp.referencia = "[TEAM] MNG_MODERATORS_AND_COMMONS"
+                ) AS permissao_grupo_moderador_comum
                 , (
                     SELECT
                         p2.permitido
@@ -41,8 +41,8 @@ class TeamMembersBody extends Component
                     JOIN tipo_permissao tp2
                         ON p2.tipo_permissao_id = tp2.id
                     WHERE p2.grupo_permissao_id = eu.grupo_permissao_id
-                        AND tp2.referencia = '[USER_ACCESS] MNG_ADMINISTRATORS_ROLES'
-                ) AS permissao_administrador
+                        AND tp2.referencia = "[TEAM] MNG_ADMINISTRATORS"
+                ) AS permissao_grupo_administrador
             FROM equipe e
             JOIN equipe_usuario eu
                 ON e.id = eu.equipe_id
