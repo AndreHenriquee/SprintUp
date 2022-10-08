@@ -9,7 +9,7 @@
         document.addEventListener('livewire:load', function() {
             Livewire.on('alertWrongEmail', () => {
                 alert('Este link de convite não é válido para esse e-mail.');
-                window.location.href = '/kanban';
+                window.location.href = '/';
             })
 
             Livewire.emit('processInviteAcception');
@@ -21,7 +21,7 @@
         <br />
         Confirme se o link está certo ou peça para que lhe enviem um novo convite.
         <br />
-        Se você está apenas tentando se logar, <a href="/kanban">clique aqui</a>.
+        Se você está apenas tentando se logar, <a href="/">clique aqui</a>.
     </div>
     @endif
 </div>

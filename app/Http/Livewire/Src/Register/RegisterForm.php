@@ -150,7 +150,7 @@ class RegisterForm extends Component
 
             self::createSession($usuarioId, $squadId);
 
-            return redirect('/kanban');
+            return redirect('/');
         }
     }
 }

@@ -11,12 +11,12 @@
                 <div class="row">
                     <div class="col-12">
                         <select wire:model="permissionGroupId" class="form-select">
-                            <option value="0">Squad do convidado</option>
+                            <option value="0">Novo grupo de permissões</option>
                             @foreach($permissionGroups as $permissionGroup)
 
                             @if(
-                            ($permissionGroup->id == 1 && $allowedGroups['permissao_administrador']) ||
-                            ($permissionGroup->id != 1 && $allowedGroups['permissao_moderador_comum'])
+                            ($permissionGroup->id == 1 && $allowedGroups['permissao_grupo_administrador']) ||
+                            ($permissionGroup->id != 1 && $allowedGroups['permissao_grupo_moderador_comum'])
                             )
                             <option <?= $memberData['grupo_permissao_id'] == $permissionGroup->id ? 'disabled' : '' ?> value="{{$permissionGroup->id}}">
                                 {{$permissionGroup->nome}} <?= $memberData['grupo_permissao_id'] == $permissionGroup->id ? '(Grupo atual)' : '' ?>
