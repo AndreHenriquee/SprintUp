@@ -50,7 +50,7 @@ class LoginBody extends Component
             return redirect('/aceitar-link-convite/' . trim($this->routeParams['hash_convite']));
         }
 
-        return redirect('/kanban');
+        return redirect('/');
     }
 
     public function login()

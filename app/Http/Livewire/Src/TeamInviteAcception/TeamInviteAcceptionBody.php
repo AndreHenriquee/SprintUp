@@ -123,7 +123,7 @@ class TeamInviteAcceptionBody extends Component
 
                 self::deactivateInviteLink((int) $this->hashInformation['id']);
 
-                return redirect('/kanban');
+                return redirect('/');
             }
 
             $this->emit('alertWrongEmail');

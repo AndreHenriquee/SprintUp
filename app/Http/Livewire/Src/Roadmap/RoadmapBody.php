@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class RoadmapBody extends Component
 {
-    public $listeners = ['validateRouteParams'];
+    protected $listeners = ['validateRouteParams'];
     public $alias;
     public $routeParams;
     public $teamData;

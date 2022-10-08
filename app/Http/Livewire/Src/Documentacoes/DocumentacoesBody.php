@@ -8,7 +8,7 @@ use Livewire\Component;
 class DocumentacoesBody extends Component
 {
     public $invalidSearchPattern = '/[^a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ0-9-' . '\s' . ']/u';
-    public $listeners = ['validateRouteParams'];
+    protected $listeners = ['validateRouteParams'];
     public $alias;
     public $routeParams;
     public $taskMentions;

@@ -65,6 +65,6 @@ class LoginInfo extends Component
             ],
         ]);
 
-        return redirect('/');
+        return redirect('/login');
     }
 }

@@ -24,7 +24,7 @@
     <?php
     } else {
         if ($alias != 'aceitar-link-convite') {
-            redirect('/');
+            redirect('/login');
         } else {
             redirect('/login/' . $routeParams['hash_convite']);
         }
