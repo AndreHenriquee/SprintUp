@@ -116,6 +116,28 @@ class ChangeMemberSquadsModal extends Component
                 }
             }
 
+            $remainingSquadAccessQuery = <<<SQL
+                SELECT
+                    s.id
+                FROM squad s
+                JOIN squad_usuario su
+                    ON s.id = su.squad_id
+                WHERE su.usuario_id = ?
+                    AND s.equipe_id = ?
+            SQL;
+
+            $remainingSquadAccess = DB::select(
+                $remainingSquadAccessQuery,
+                [(int) $this->memberData['id'], (int) $this->teamId]
+            );
+
+            if (empty($remainingSquadAccess)) {
+                DB::delete(
+                    "DELETE FROM equipe_usuario WHERE usuario_id = ? AND equipe_id = ?",
+                    [(int) $this->memberData['id'], (int) $this->teamId]
+                );
+            }
+
             return redirect(request()->header('Referer'));
         }
     }
