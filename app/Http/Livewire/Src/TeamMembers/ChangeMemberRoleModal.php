@@ -7,7 +7,7 @@ use Livewire\Component;
 
 class ChangeMemberRoleModal extends Component
 {
-    public $memberData, $teamId, $allowedGroups;
+    public $memberData, $teamId;
     public $scrumRoles, $memberSquads;
     public $selectedRoleIdsPerSquad;
     public $doesRolesChanged;

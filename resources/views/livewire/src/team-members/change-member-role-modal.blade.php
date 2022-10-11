@@ -2,7 +2,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Mudar papel Scrum do usuário</h5>
+                <h5 class="modal-title">Alterar papel Scrum do usuário</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -21,7 +21,7 @@
                         </select>
                     </div>
                     @endforeach
-                    <div class="col-12 mt-2">
+                    <div class="col-12">
                         @error('doesRolesChanged')
                         <hr />
                         <h6 class="text-danger error">Você precisa alterar o papel do usuário em ao menos uma Squad</h6>
