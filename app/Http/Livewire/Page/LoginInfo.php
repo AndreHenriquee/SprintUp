@@ -32,6 +32,10 @@ class LoginInfo extends Component
                 , logo
             FROM squad
             WHERE id = ?
+                AND (
+                    excluida <> 1
+                    OR excluida IS NULL
+                )
         SQL;
 
         $loggedUserInfo = (array) DB::selectOne(

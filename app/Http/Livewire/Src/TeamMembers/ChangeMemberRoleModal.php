@@ -37,6 +37,10 @@ class ChangeMemberRoleModal extends Component
                 ON s.id = su.squad_id
             WHERE su.usuario_id = ?
                 AND s.equipe_id = ?
+                AND (
+                    s.excluida <> 1
+                    OR s.excluida IS NULL
+                )
         SQL;
 
         return DB::select(

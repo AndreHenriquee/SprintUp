@@ -82,6 +82,10 @@ class RoadmapBody extends Component
                 JOIN squad s
                     ON e.id = s.equipe_id
                     AND s.id = ?
+                WHERE (
+                    s.excluida <> 1
+                    OR s.excluida IS NULL
+                )
             SQL;
 
             return (array) DB::selectOne(

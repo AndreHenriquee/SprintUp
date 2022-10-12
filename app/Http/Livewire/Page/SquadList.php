@@ -36,6 +36,10 @@ class SquadList extends Component
             JOIN equipe_usuario eu
                 ON e.id = eu.equipe_id
                 AND eu.usuario_id = ?
+            WHERE (
+                s.excluida <> 1
+                OR s.excluida IS NULL
+            )
             ORDER BY e.nome, s.nome
         SQL;
 

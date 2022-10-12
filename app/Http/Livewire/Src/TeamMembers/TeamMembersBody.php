@@ -50,12 +50,12 @@ class TeamMembersBody extends Component
                 ON p.tipo_permissao_id = tp.id
             WHERE p.grupo_permissao_id = ?
                 AND tp.referencia IN (
-                "[TEAM] MNG_MODERATORS_AND_COMMONS"
-                , "[TEAM] MNG_ADMINISTRATORS"
-                , "[USER_ACCESS] MNG_MODERATORS_AND_COMMONS_ROLES"
-                , "[USER_ACCESS] MNG_ADMINISTRATORS_ROLES"
-                , "[WORKFLOW] MNG_SQUADS"
-            )
+                    "[TEAM] MNG_MODERATORS_AND_COMMONS"
+                    , "[TEAM] MNG_ADMINISTRATORS"
+                    , "[USER_ACCESS] MNG_MODERATORS_AND_COMMONS_ROLES"
+                    , "[USER_ACCESS] MNG_ADMINISTRATORS_ROLES"
+                    , "[WORKFLOW] MNG_SQUADS"
+                )
         SQL;
 
         $teamPermissions = DB::select(
@@ -93,7 +93,8 @@ class TeamMembersBody extends Component
             JOIN grupo_permissao gp
                 ON eu.grupo_permissao_id = gp.id
             WHERE eu.equipe_id = ?
-            ORDER BY IF (u.id = ?, 1, 0) DESC
+            ORDER BY IF (u.id = ?, 1, 0) DESC,
+                u.nome ASC
         SQL;
 
         return (array) DB::select(

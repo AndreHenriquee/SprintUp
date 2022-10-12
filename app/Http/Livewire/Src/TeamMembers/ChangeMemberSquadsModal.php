@@ -49,6 +49,10 @@ class ChangeMemberSquadsModal extends Component
                 ) AS cargo_nome
             FROM squad s
             WHERE s.equipe_id = ?
+                AND (
+                    s.excluida <> 1
+                    OR s.excluida IS NULL
+                )
         SQL;
 
         return DB::select(
@@ -124,6 +128,10 @@ class ChangeMemberSquadsModal extends Component
                     ON s.id = su.squad_id
                 WHERE su.usuario_id = ?
                     AND s.equipe_id = ?
+                    AND (
+                        s.excluida <> 1
+                        OR s.excluida IS NULL
+                    )
             SQL;
 
             $remainingSquadAccess = DB::select(
