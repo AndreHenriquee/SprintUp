@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Src\TeamMembers;
+namespace App\Http\Livewire\Src\TeamSquads;
 
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -16,7 +16,7 @@ class TeamSquadsBody extends Component
         $this->teamDataAndPermission = self::fetchTeamDataAndPermission($this->sessionParams);
         $this->teamSquads = self::fetchTeamSquads((int) $this->routeParams['equipe_id'], (int) $this->sessionParams['squad_id']);
 
-        return view('livewire.src.team-members.team-squads-body');
+        return view('livewire.src.team-squads.team-squads-body');
     }
 
     private function fetchTeamDataAndPermission(array $sessionParams)

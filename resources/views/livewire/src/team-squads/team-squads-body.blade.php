@@ -11,6 +11,13 @@
         </div>
     </div>
     <hr class="opacity-100">
+    @if($teamDataAndPermission['permissao_gerenciar_squads'])
+    <div class="row mb-3">
+        <div class="col">
+            <a href="/nova-squad/{{$routeParams['equipe_id']}}" class="btn btn-primary btn-dark">Criar nova Squad nesta equipe</a>
+        </div>
+    </div>
+    @endif
     <div class="row rounded p-3 mt-3 mb-2" style="background-color:#f2f2f2">
         <table class="table table-hover h5 rounded" style="background-color:#e6e6e6;">
             <thead>
@@ -38,7 +45,7 @@
                                 <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
                             </svg>
                         </a>
-                        <livewire:src.team-members.sure-to-exclude-squad-modal :squadData="(array) $teamSquad" :numberOfSquads="$numberOfSquads" />
+                        <livewire:src.team-squads.sure-to-exclude-squad-modal :squadData="(array) $teamSquad" :numberOfSquads="$numberOfSquads" />
 
                         @endif
 

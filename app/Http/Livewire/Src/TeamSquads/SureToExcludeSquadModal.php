@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Src\TeamMembers;
+namespace App\Http\Livewire\Src\TeamSquads;
 
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -11,7 +11,7 @@ class SureToExcludeSquadModal extends Component
 
     public function render()
     {
-        return view('livewire.src.team-members.sure-to-exclude-squad-modal');
+        return view('livewire.src.team-squads.sure-to-exclude-squad-modal');
     }
 
     public function excludeSquad()

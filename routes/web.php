@@ -160,7 +160,17 @@ Route::get('squads-equipe/{equipe_id}', function ($equipe_id) {
     return buildView(
         'squads-equipe',
         'Sprint Up | Squads da equipe',
-        'src.team-members.team-squads-body',
+        'src.team-squads.team-squads-body',
+        true,
+        ['equipe_id' => $equipe_id]
+    );
+});
+
+Route::get('nova-squad/{equipe_id}', function ($equipe_id) {
+    return buildView(
+        'nova-squad',
+        'Sprint Up | Nova Squads na equipe',
+        'src.team-squads.new-squad-body',
         true,
         ['equipe_id' => $equipe_id]
     );
