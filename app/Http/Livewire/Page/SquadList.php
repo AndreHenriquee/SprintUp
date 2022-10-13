@@ -74,6 +74,6 @@ class SquadList extends Component
             ],
         ]);
 
-        return redirect('/' . $this->alias);
+        return redirect('/');
     }
 }
