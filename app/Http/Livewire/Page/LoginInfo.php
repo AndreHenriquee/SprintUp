@@ -29,6 +29,7 @@ class LoginInfo extends Component
         $selectedSquadQuery = <<<SQL
             SELECT
                 nome
+                , referencia
                 , logo
             FROM squad
             WHERE id = ?
@@ -55,6 +56,7 @@ class LoginInfo extends Component
             ],
             'squad' => [
                 'nome' => $selectedSquadInfo['nome'],
+                'referencia' => $selectedSquadInfo['referencia'],
                 'foto' => $selectedSquadInfo['logo'],
             ],
         ];

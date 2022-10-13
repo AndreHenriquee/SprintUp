@@ -24,6 +24,7 @@ class SquadList extends Component
         $squadsQuery = <<<SQL
             SELECT
                 s.id AS squad_id
+                , s.referencia AS squad_referencia
                 , s.nome AS squad_nome
                 , e.id AS equipe_id
                 , e.nome AS equipe_nome
@@ -55,7 +56,7 @@ class SquadList extends Component
                 $groupedSquads[$squad->equipe_id]['nome'] = $squad->equipe_nome;
             }
 
-            $groupedSquads[$squad->equipe_id]['squads'][$squad->squad_id] = $squad->squad_nome;
+            $groupedSquads[$squad->equipe_id]['squads'][$squad->squad_id] = $squad->squad_referencia . ' | ' . $squad->squad_nome;
         }
 
         return $groupedSquads;

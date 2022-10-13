@@ -61,6 +61,7 @@ class TeamInviteBody extends Component
         $squadsQuery = <<<SQL
             SELECT
                 id
+                , referencia
                 , nome
             FROM squad
             WHERE equipe_id = ?

@@ -18,7 +18,7 @@
                         <option value="0">Squad do convidado</option>
                         @foreach($squads as $squad)
                         <option value="{{$squad->id}}">
-                            {{$squad->nome}}
+                            {{$squad->referencia}} | {{$squad->nome}}
                         </option>
                         @endforeach
                     </select>

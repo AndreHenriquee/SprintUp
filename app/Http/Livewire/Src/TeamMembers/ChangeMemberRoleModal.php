@@ -30,6 +30,7 @@ class ChangeMemberRoleModal extends Component
         $memberSquadsQuery = <<<SQL
             SELECT
                 s.id
+                , s.referencia
                 , s.nome
                 , su.cargo_id
             FROM squad s

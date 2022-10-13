@@ -10,7 +10,7 @@
                 <div class="row bg-light p-2 rounded">
                     @foreach($memberSquads as $memberSquad)
                     <div class="col-12 mb-3">
-                        <h6>Papel para a Squad <b>{{$memberSquad->nome}}</b>:</h6>
+                        <h6>Papel para a Squad <b>{{$memberSquad->referencia}} | {{$memberSquad->nome}}</b>:</h6>
                         <select wire:model="selectedRoleIdsPerSquad.{{$memberSquad->id}}" class="form-select">
                             <option value="0">Novo papel Scrum</option>
                             @foreach($scrumRoles as $scrumRole)

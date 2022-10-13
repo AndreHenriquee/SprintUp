@@ -10,7 +10,7 @@
                 <div class="row bg-light p-2 rounded">
                     @foreach($teamSquads as $teamSquad)
                     <div class="col-12 mb-3">
-                        <h6>Cargo na Squad <b>{{$teamSquad->nome}}</b>:</h6>
+                        <h6>Cargo na Squad <b>{{$teamSquad->referencia}} | {{$teamSquad->nome}}</b>:</h6>
                         @if(empty($teamSquad->cargo_id))
                         <select wire:model="selectedRoleIdsPerSquad.{{$teamSquad->id}}" class="form-select">
                             <option value="0">Novo papel Scrum (usuário não está nesta Squad)</option>

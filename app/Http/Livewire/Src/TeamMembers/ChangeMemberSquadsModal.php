@@ -30,6 +30,7 @@ class ChangeMemberSquadsModal extends Component
         $teamSquadsQuery = <<<SQL
             SELECT
                 s.id
+                , s.referencia
                 , s.nome
                 , (
                     SELECT

@@ -7,7 +7,7 @@
             </div>
             <div class="modal-body">
                 @if($numberOfSquads > 1)
-                <p>Você está excluindo a squad <b>{{$squadData['nome']}}</b>.</p>
+                <p>Você está excluindo a squad <b>{{$squadData['referencia']}} | {{$squadData['nome']}}</b>.</p>
                 <p><b>Todos</b> os membros dela <b>perderão o acesso</b> a ela, <b>incluindo você</b>, se for o caso.</p>
                 <p>Tem certeza de que deseja prosseguir? <b>Esta ação é irreversível.</b></p>
                 @else
