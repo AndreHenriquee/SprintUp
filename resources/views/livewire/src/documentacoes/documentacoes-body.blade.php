@@ -8,6 +8,17 @@
         </div>
     </div>
     <hr class="opacity-100">
+    @if($teamDataAndPermission['permissao_gerenciar_documentacoes'])
+    <div class="row">
+        <div class="col-12">
+            <div class="row mb-3">
+                <div class="col">
+                    <a href="/nova-documentacao/{{$teamDataAndPermission['id']}}" class="btn btn-primary btn-dark">Registrar uma documentação</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
     <div class="row mb-3">
         <div class="col-auto">
             <input wire:model="textFilter" class="form-control" id="textFilterInput" type="search" placeholder="Buscar">
@@ -39,7 +50,7 @@
             <input class="d-none" type="text" wire:model="dateFilter" id="dateFilterInput-hidden">
         </div>
         <div class="col-auto">
-            <button wire:click="updateFilters" type="submit" class="btn btn-primary btn-dark">Buscar</button>
+            <button wire:click="updateFilters" type="submit" class="btn btn-secondary btn-secondary">Buscar</button>
         </div>
 
         <script>
