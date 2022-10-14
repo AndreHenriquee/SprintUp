@@ -7,8 +7,7 @@ use Livewire\Component;
 
 class DocumentModal extends Component
 {
-    public $data;
-    public $typeMap;
+    public $teamDataAndPermission, $data, $typeMap;
 
     public $docTitle, $docContent;
 

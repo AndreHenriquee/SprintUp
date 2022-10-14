@@ -39,11 +39,17 @@ class DocumentacoesBody extends Component
             SELECT
                 e.id
                 , p.permitido AS permissao_gerenciar_documentacoes
+                , c.referencia AS cargo
             FROM equipe e
             JOIN squad s
                 ON e.id = s.equipe_id
             JOIN equipe_usuario eu
                 ON e.id = eu.equipe_id
+            JOIN squad_usuario su
+                ON s.id = su.squad_id
+                AND eu.usuario_id = su.usuario_id
+            JOIN cargo c
+                ON su.cargo_id = c.id
             JOIN permissao p
                 ON eu.grupo_permissao_id = p.grupo_permissao_id
             JOIN tipo_permissao tp

@@ -8,6 +8,7 @@ use Livewire\Component;
 class DocumentList extends Component
 {
     public $filters;
+    public $teamDataAndPermission;
 
     public $documentacoes;
     public $tipo;

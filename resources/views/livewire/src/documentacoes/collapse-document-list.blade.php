@@ -18,7 +18,7 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <livewire:src.documentacoes.document-list :tipo="$tipo" :typeMap="$typeMap" :filters="$unifiedFilters" />
+            <livewire:src.documentacoes.document-list :teamDataAndPermission="$teamDataAndPermission" :tipo="$tipo" :typeMap="$typeMap" :filters="$unifiedFilters" />
         </div>
     </div>
 </div>

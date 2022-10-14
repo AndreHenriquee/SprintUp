@@ -1,4 +1,10 @@
 <div wire:ignore.self class="modal fade" id="modalDocument-{{$data['id']}}" tabindex="-1">
+    <?php
+    $allowedToManageDocs = $teamDataAndPermission['permissao_gerenciar_documentacoes']
+        && ($data['tipo'] == 'INFORMATION'
+            || in_array($teamDataAndPermission['cargo'], ['PO', 'SM'])
+        );
+    ?>
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-content">
             <div class="modal-header d-block">
@@ -7,7 +13,7 @@
                         {{$data['referencia']}}
                     </div>
                     <div class="col-7">
-                        <input wire:model="docTitle" class="modal-title h5 m-0 w-100 border-0 border-bottom" id="docTitle-{{$data['id']}}" type="text" autocomplete="off" placeholder="Título">
+                        <input <?= $allowedToManageDocs ? '' : 'disabled' ?> wire:model="docTitle" class="modal-title h5 m-0 w-100 border-0 border-bottom" id="docTitle-{{$data['id']}}" type="text" autocomplete="off" placeholder="Título">
                         @error('docTitle') <span class="text-danger error">{{ $message }}</span> @enderror
                     </div>
                     <div class="col-3 text-end">
@@ -22,7 +28,7 @@
                 <div class="row">
                     <b class="modal-title">{{$typeMap[$data['tipo']]['titulo']}}</b>
                     <div class="col-12 p-3">
-                        <textarea wire:model="docContent" id="docContent-{{$data['id']}}" class="form-control bg-white" rows="10" autocomplete="off" placeholder="Conteúdo da documentação"></textarea>
+                        <textarea <?= $allowedToManageDocs ? '' : 'disabled' ?> wire:model="docContent" id="docContent-{{$data['id']}}" class="form-control bg-white" rows="10" autocomplete="off" placeholder="Conteúdo da documentação"></textarea>
                         @error('docContent') <span class="text-danger error">{{ $message }}</span> @enderror
                     </div>
                 </div>
@@ -30,9 +36,11 @@
                     <b class="modal-title">Comentários</b>
                 </div> -->
             </div>
+            @if($allowedToManageDocs)
             <div class="modal-footer">
                 <button wire:click="saveChanges" class="btn btn-dark">Salvar alterações</button>
             </div>
+            @endif
             <script>
                 document.addEventListener('livewire:load', function() {
                     var inputedDocTitle = "{{$data['titulo']}}";

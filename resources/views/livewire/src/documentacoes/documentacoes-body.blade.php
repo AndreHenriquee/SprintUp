@@ -129,16 +129,16 @@
         <div class="col-12">
             <div class="h3">Informações</div>
             <div class="row p-2 mt-3">
-                <livewire:src.documentacoes.collapse-document-list :tipo="'INFORMATION'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
+                <livewire:src.documentacoes.collapse-document-list :teamDataAndPermission="$teamDataAndPermission" :tipo="'INFORMATION'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
             </div>
         </div>
         <div class="col-12">
             <div class="h3">Registros de cerimônias</div>
             <div class="row p-2 mt-3">
-                <livewire:src.documentacoes.collapse-document-list :tipo="'SPRINT_PLANNING'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
-                <livewire:src.documentacoes.collapse-document-list :tipo="'DAILY_SCRUM'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
-                <livewire:src.documentacoes.collapse-document-list :tipo="'SPRINT_REVIEW'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
-                <livewire:src.documentacoes.collapse-document-list :tipo="'SPRINT_RETROSPECTIVE'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
+                <livewire:src.documentacoes.collapse-document-list :teamDataAndPermission="$teamDataAndPermission" :tipo="'SPRINT_PLANNING'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
+                <livewire:src.documentacoes.collapse-document-list :teamDataAndPermission="$teamDataAndPermission" :tipo="'DAILY_SCRUM'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
+                <livewire:src.documentacoes.collapse-document-list :teamDataAndPermission="$teamDataAndPermission" :tipo="'SPRINT_REVIEW'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
+                <livewire:src.documentacoes.collapse-document-list :teamDataAndPermission="$teamDataAndPermission" :tipo="'SPRINT_RETROSPECTIVE'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
             </div>
         </div>
     </div>
