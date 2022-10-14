@@ -106,6 +106,10 @@ class DocumentList extends Component
                     AND d.equipe_id = s.equipe_id
                 )
             )
+                AND (
+                    s.excluida <> 1
+                    OR s.excluida IS NULL
+                )
             {$filters}
             GROUP BY d.id, d.referencia, d.titulo, d.data_hora, d.tipo, d.conteudo
             ORDER BY d.data_hora DESC

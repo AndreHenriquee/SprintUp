@@ -29,9 +29,14 @@ class LoginInfo extends Component
         $selectedSquadQuery = <<<SQL
             SELECT
                 nome
+                , referencia
                 , logo
             FROM squad
             WHERE id = ?
+                AND (
+                    excluida <> 1
+                    OR excluida IS NULL
+                )
         SQL;
 
         $loggedUserInfo = (array) DB::selectOne(
@@ -51,6 +56,7 @@ class LoginInfo extends Component
             ],
             'squad' => [
                 'nome' => $selectedSquadInfo['nome'],
+                'referencia' => $selectedSquadInfo['referencia'],
                 'foto' => $selectedSquadInfo['logo'],
             ],
         ];

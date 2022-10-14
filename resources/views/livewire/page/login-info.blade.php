@@ -4,7 +4,7 @@
             {{$loginInfo['usuario']['nome']}}
         </div>
         <div title="{{$loginInfo['squad']['nome']}}" class="col text-truncate border-end border-light">
-            {{$loginInfo['squad']['nome']}}
+            {{$loginInfo['squad']['referencia']}} | {{$loginInfo['squad']['nome']}}
         </div>
         <div class="col">
             <a wire:click="logout" title="Deslogar" style="cursor:pointer; text-decoration: none;">

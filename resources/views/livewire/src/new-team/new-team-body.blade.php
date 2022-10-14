@@ -4,8 +4,8 @@
             <h2 class="modal-title">Crie uma nova equipe</h2>
         </div>
         <div class="modal-body">
-            <h4>Informações da equipe</h4>
             <div class="row">
+                <h4>Informações da equipe</h4>
                 <div class="col-12 mt-2">
                     <input type="text" wire:model="nomeEquipe" class="form-control" placeholder="Nome da Equipe" />
                     @error('nomeEquipe') <span class="text-danger error">{{ $message }}</span> @enderror

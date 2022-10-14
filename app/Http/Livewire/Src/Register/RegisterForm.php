@@ -80,7 +80,12 @@ class RegisterForm extends Component
 
     private static function createRef(String $nomeSquad)
     {
-        if (strpos($nomeSquad, " ")) {
+        if (
+            strpos($nomeSquad, ' ')
+            || strpos($nomeSquad, ',')
+            || strpos($nomeSquad, '_')
+            || strpos($nomeSquad, '-')
+        ) {
             $nomeSquad = preg_split("/[\s,_-]+/", $nomeSquad);
 
             $referencia = '';

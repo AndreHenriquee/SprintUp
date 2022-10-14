@@ -7,7 +7,7 @@ use Livewire\Component;
 
 class ChangeMemberRoleModal extends Component
 {
-    public $memberData, $teamId, $allowedGroups;
+    public $memberData, $teamId;
     public $scrumRoles, $memberSquads;
     public $selectedRoleIdsPerSquad;
     public $doesRolesChanged;
@@ -30,6 +30,7 @@ class ChangeMemberRoleModal extends Component
         $memberSquadsQuery = <<<SQL
             SELECT
                 s.id
+                , s.referencia
                 , s.nome
                 , su.cargo_id
             FROM squad s
@@ -37,6 +38,10 @@ class ChangeMemberRoleModal extends Component
                 ON s.id = su.squad_id
             WHERE su.usuario_id = ?
                 AND s.equipe_id = ?
+                AND (
+                    s.excluida <> 1
+                    OR s.excluida IS NULL
+                )
         SQL;
 
         return DB::select(

@@ -61,9 +61,14 @@ class TeamInviteBody extends Component
         $squadsQuery = <<<SQL
             SELECT
                 id
+                , referencia
                 , nome
             FROM squad
             WHERE equipe_id = ?
+                AND (
+                    excluida <> 1
+                    OR excluida IS NULL
+                )
         SQL;
 
         return DB::select(

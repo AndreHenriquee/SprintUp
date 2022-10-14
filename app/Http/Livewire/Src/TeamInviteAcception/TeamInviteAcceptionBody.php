@@ -56,7 +56,7 @@ class TeamInviteAcceptionBody extends Component
     private static function registerAccess(int $userId, array $hashInformation)
     {
         $teamId = DB::selectOne(
-            "SELECT equipe_id FROM squad WHERE id = ?",
+            "SELECT equipe_id FROM squad WHERE id = ? AND (excluida <> 1 OR excluida IS NULL)",
             [$hashInformation['squad_id']]
         )->equipe_id;
 
