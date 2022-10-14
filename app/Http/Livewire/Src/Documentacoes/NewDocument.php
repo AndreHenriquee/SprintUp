@@ -86,7 +86,7 @@ class NewDocument extends Component
             [
                 'docTitle.required' => 'O título é obrigatório',
                 'docTitle.min' => 'O título precisa ter no mínimo 3 caracteres',
-                'docTitle.max' => 'O título pode ter no máximo 50 caracteres',
+                'docTitle.max' => 'O título pode ter no máximo 100 caracteres',
                 'docDate.date' => 'Insira uma data válida',
                 'docDate.after_or_equal' => 'Insira uma data realista',
                 'docDate.before_or_equal' => 'A data não pode ser futura',
