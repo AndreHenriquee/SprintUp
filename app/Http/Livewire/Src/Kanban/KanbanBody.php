@@ -41,22 +41,28 @@ class KanbanBody extends Component
 
     private static function fetchColumns(int $quadroKanbanId)
     {
+        $sessionParams = session('user_data');
         $columnsQuery = <<<SQL
-            SELECT
-                id
-                , nome
-                , descricao
-                , inicio_tarefa
-                , fim_tarefa
-                , wip
-            FROM coluna
-            WHERE quadro_kanban_id = ?
-            ORDER BY ordem ASC;
+             SELECT
+                c.id
+                , c.nome as nome
+                , c.descricao as descricao
+                , c.inicio_tarefa
+                , c.fim_tarefa
+                , c.wip
+                , qk.squad_id as coluna_id
+            FROM coluna c
+            INNER JOIN quadro_kanban qk
+                ON c.quadro_kanban_id = qk.id
+            WHERE qk.id = ?
+                AND qk.squad_id = ?
+                AND c.ordem <> 0
+            ORDER BY c.ordem ASC;
         SQL;
 
         return DB::select(
             $columnsQuery,
-            [$quadroKanbanId],
+            [$quadroKanbanId, $sessionParams['squad_id']],
         );
     }
 }

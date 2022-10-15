@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class ColunaConteudo extends Component
 {
-    public $columnData;
+    public $columnData, $allColumns;
     public $cards;
     public $wipHitted;
 
@@ -32,12 +32,15 @@ class ColunaConteudo extends Component
                 , est.extensao
                 , us1.foto AS usuario_responsavel_foto
                 , us1.nome AS usuario_responsavel_nome
+                , us1.email AS usuario_responsavel_email
+                , t.coluna_id AS tarefa_status
                 -- Detalhamento da tarefa
-                , t.detalhamento
+                , t.detalhamento AS detalhamento 
                 , t.data_hora_criacao
                 , t.data_hora_ultima_movimentacao
+                , col.id AS id_coluna
                 , col.nome AS nome_coluna
-                , t.prioridade
+                , t.prioridade AS prioridade
                 , us2.foto AS usuario_relator_foto
                 , us2.nome AS usuario_relator_nome
             FROM tarefa t

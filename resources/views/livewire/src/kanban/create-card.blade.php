@@ -13,7 +13,7 @@
             <div class="row">
                 <p class="form-label mb-2"><b>Descrição: </b> </p>
                 <div class="col-sm-9">
-                    <textarea class="form-control" wire:model="descricao" rows="15" aria-label="With textarea" style="background-color:rgba(195, 195, 195, 0.35);border:none"></textarea>
+                    <textarea class="form-control" wire:model="descricao" rows="15" style="background-color:rgba(195, 195, 195, 0.35);border:none"></textarea>
                 </div>
                 <div class="col-3 p-3 bg-light">
                     <div class="input-group mb-3">
@@ -24,7 +24,7 @@
                     <p class="form-label mb-2">
                         <b>Responsável: </b> 
                     </p>
-                    <input class="form-control mb-2 mt-2" list="squadMembers" id="selectedTaskMember" style="background-color:rgba(195, 195, 195, 0.35);border:none" placeholder="Selecione o responsável">
+                    <input class="form-control mb-2 mt-2" autocomplete="off" list="squadMembers" id="selectedTaskMember" style="background-color:rgba(195, 195, 195, 0.35);border:none" placeholder="Selecione o responsável">
                     <datalist id="squadMembers">
                         @foreach($squadMembers as $squadMember)
                         <option data-value="{{$squadMember->id}}">
@@ -56,32 +56,44 @@
                         });
                     </script>
                     <p class="form-label mb-2"><b>Estimativa: </b> </p>
-                    <div class="input-group">
-                        <select class="form-select" onchange="estimativeTypes()" id="selectEstimative" style="background-color:rgba(195, 195, 195, 0.35);border:none">
-                            <option selected value="">Selecione o tipo de estimativa</option>
-                            <option value="sp">Story Points</option>
-                            <option value="time">Tempo</option>
-                        </select>
+                    <div class="row">
+                        <div class="col">
+                            <input class="form-check-input" wire:model="estimativeRadio" name="estimativeRadio" id="hoursRadio" type="radio" value="H">
+                            <label class="form-check-label" type="radio">
+                                Horas
+                            </label>
+                        </div>
+
+                        <div class="col">
+                            <input class="form-check-input" wire:model="estimativeRadio" name="estimativeRadio" id="storyPointsRadio" type="radio" value="Sp">
+                            <label class="form-check-label" type="radio">
+                                Story Points
+                            </label>
+                        </div>
                     </div>
-                    <div style="display:none" id="storyPoints">
+                    @if($estimativeRadio == "Sp")
+                    <div style="" id="storyPoints">
                         <p class="form-label mt-3">
                             <b>Story Points: </b> 
                         </p>
-                        <select class="form-select" id="selectEstimative" onchange="return estimativeTypes()" style="background-color:rgba(195, 195, 195, 0.35);border:none">
-                            <option selected value="0">0</option>
+                        <select class="form-select" wire:model="spValue" id="selectPointsEstimative" style="background-color:rgba(195, 195, 195, 0.35);border:none">
+                            <option value="" selected>Selecione a estimativa</option>
+                            <option value="0">0</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
                             <option value="5">5</option>
                             <option value="8">8</option>
                             <option value="13">13</option>
-                            <option value="21">21</option>
                         </select>
                     </div>
-                    <div style="display:none" id="hours">
+                    @endif
+                    @if($estimativeRadio == "H")
+                    <div style="" id="hours">
                         <p class="form-label mt-3"><b>Horas: </b> </p>
-                        <input class="form-control mb-2" style="background-color:rgba(195, 195, 195, 0.35);border:none">
+                        <input type="number" id="inputId" class="form-control mb-2" wire:model="timeValue" style="background-color:rgba(195, 195, 195, 0.35);border:none">
                     </div>
+                    @endif
                 </div>
             </div>
             <div class="d-flex flex-row-reverse">
@@ -90,23 +102,8 @@
         </div>
     </div>
     <script>
-        var estimativeType
-        
-        function estimativeTypes() 
-        {
-            var estimativeType = document.getElementById("selectEstimative").value;
-            var storyPointsDiv = document.getElementById("storyPoints");
-            var hoursDiv = document.getElementById("hours");
-            if (estimativeType == "sp") {
-            document.getElementById('storyPoints').style.display = 'block';
-            document.getElementById('hours').style.display = 'none';
-            } else if (estimativeType == "time") {
-            document.getElementById('hours').style.display = 'block';
-            document.getElementById('storyPoints').style.display = 'none';
-            } else {
-            document.getElementById('hours').style.display = 'none';
-            document.getElementById('storyPoints').style.display = 'none';
-            }
-        }
+    document.addEventListener('livewire:load', function (){
+        Livewire.emit('setEstimatives');
+    })
     </script>
 </div>

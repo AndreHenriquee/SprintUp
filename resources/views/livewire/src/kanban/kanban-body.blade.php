@@ -18,15 +18,15 @@
     <div class="row mb-3 rounded p-1" style="background-color:#f2f2f2">
         <div class="col-12">
             <div class="row pe-4">
-                @foreach ($columns as $column)
+                @foreach($columns as $column)
                 <livewire:src.kanban.coluna-cabecalho :columnData="(array) $column" />
                 @endforeach
             </div>
         </div>
         <div class="col-12">
             <div class="row vh-100 pe-4" style="overflow: overlay;">
-                @foreach ($columns as $column)
-                <livewire:src.kanban.coluna-conteudo :columnData="(array) $column" />
+                @foreach($columns as $column)
+                <livewire:src.kanban.coluna-conteudo :columnData="(array) $column" :allColumns="(array) $columns" />
                 @endforeach
             </div>
         </div>

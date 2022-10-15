@@ -17,6 +17,10 @@ class CreateCard extends Component
     public $titulo;
     public $taskOwnerId;
     public $userInfo;
+    public $spValue;
+    public $timeValue;
+    public $estimativeRadio;
+    protected $listeners = ['setEstimatives' => 'setEstimatives'];
 
     public function render()
     {
@@ -25,17 +29,41 @@ class CreateCard extends Component
         return view('livewire.src.kanban.create-card');
     }
 
+    public function setEstimatives() {
+
+        if ($this->estimativeRadio == "Sp") {
+            $this->timeValue = null;
+            $estimative = [$this->spValue, $this->estimativeRadio];
+        } else {
+            $this->spValue = null;
+            $estimative = [$this->timeValue, $this->estimativeRadio];
+        }
+        return $estimative;
+    }
+
     public function createCard()
     {
         $sessionParams = session('user_data');
         $contador = self::referenceCounter();
-
+        $estimativaId = null;
+        $column = self::fetchColumnData($sessionParams);
+       
         if (self::fieldsValidation()) {
             $taskInfo = DB::table('squad')
                 ->where('squad.id', '=', $sessionParams['squad_id'])
                 ->select('squad.referencia as referencia')
                 ->first();
 
+            if($this->estimativeRadio && $this->spValue || $this->timeValue !== null) {
+                $estimativa= self::setEstimatives();
+                $forma = $estimativa[1] == "Sp" ? $forma = "Fibonacci" : $forma = "Horas";
+                
+                $estimativaId = DB::table('estimativa_tarefa')->insertGetId([
+                    'estimativa' => $estimativa[0],
+                    'forma' => $forma,
+                    'extensao' => $this->estimativeRadio,
+                ]);
+            }
             DB::table('tarefa')->insert([
                 'referencia' => $taskInfo->referencia . $contador,
                 'titulo' => $this->titulo,
@@ -43,10 +71,11 @@ class CreateCard extends Component
                 'prioridade' => 1,
                 'data_hora_criacao' => Carbon::now('America/Sao_Paulo'),
                 'data_hora_ultima_movimentacao' => Carbon::now('America/Sao_Paulo'),
-                'coluna_id' => 1,
+                'coluna_id' => $column->id,
                 'squad_id' => $sessionParams['squad_id'],
                 'responsavel_id' => $this->taskOwnerId,
                 'relator_id' => $sessionParams['usuario_id'],
+                'estimativa_tarefa_id' => $estimativaId,
             ]);
 
             return redirect('/kanban');
@@ -95,8 +124,9 @@ class CreateCard extends Component
         );
     }
 
-    private static function fetchUserInfo(array $sessionParams)
+    private static function fetchUserInfo()
     {
+        $sessionParams = session('user_data');
         $userInfoQuery = <<<SQL
             SELECT
                 nome
@@ -125,10 +155,33 @@ class CreateCard extends Component
             ],
             [
                 'titulo.required' => 'Título da tarefa é obrigatório',
-                'titulo.max' => 'Titulo deve conter até 150 caracteres'
+                'titulo.max' => 'Titulo deve conter até 150 caracteres',
             ],
         );
 
         return true;
+    }
+
+    private static function fetchColumnData(array $sessionParams)
+    {
+        $columnInfo = <<<SQL
+            SELECT 
+                coluna.id
+            FROM quadro_kanban 
+            JOIN squad_usuario 
+                ON quadro_kanban.squad_id = squad_usuario.squad_id
+            JOIN coluna
+                ON quadro_kanban.id = coluna.quadro_kanban_id
+            WHERE squad_usuario.usuario_id = ?
+            AND squad_usuario.squad_id = ?
+            ORDER BY coluna.id ASC 
+            LIMIT 1
+        SQL;
+
+        return DB::selectOne(
+            $columnInfo,
+            [$sessionParams['usuario_id'], $sessionParams['squad_id']],
+        );
+
     }
 }
