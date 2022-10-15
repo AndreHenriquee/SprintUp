@@ -36,6 +36,7 @@ class NewSquadBody extends Component
             WHERE e.id = ?
                 AND eu.usuario_id = ?
                 AND tp.referencia = "[WORKFLOW] MNG_SQUADS"
+                AND p.permitido = 1
         SQL;
 
         return (array) DB::selectOne(

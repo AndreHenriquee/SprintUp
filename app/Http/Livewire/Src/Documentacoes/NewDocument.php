@@ -51,6 +51,7 @@ class NewDocument extends Component
                 AND s.id = ?
                 AND eu.usuario_id = ?
                 AND tp.referencia = "[DOCS] MNG_DOCUMENTATIONS"
+                AND p.permitido = 1
         SQL;
 
         return (array) DB::selectOne(
