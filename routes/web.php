@@ -108,6 +108,16 @@ Route::get('documentacoes/{texto?}/{mencao_tarefa?}/{mencao_membro?}/{data?}', f
     );
 });
 
+Route::get('nova-documentacao/{equipe_id}', function (int $equipe_id) {
+    return buildView(
+        'nova-documentacao',
+        'Sprint Up | Registrar nova documentação',
+        'src.documentacoes.new-document',
+        true,
+        ['equipe_id' => $equipe_id]
+    );
+});
+
 Route::get('roadmap/{produto_id?}', function ($produto_id = null) {
     return buildView(
         'roadmap',

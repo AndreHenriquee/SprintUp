@@ -8,6 +8,17 @@
         </div>
     </div>
     <hr class="opacity-100">
+    @if($teamDataAndPermission['permissao_gerenciar_documentacoes'])
+    <div class="row">
+        <div class="col-12">
+            <div class="row mb-3">
+                <div class="col">
+                    <a href="/nova-documentacao/{{$teamDataAndPermission['id']}}" class="btn btn-primary btn-dark">Registrar uma documentação</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
     <div class="row mb-3">
         <div class="col-auto">
             <input wire:model="textFilter" class="form-control" id="textFilterInput" type="search" placeholder="Buscar">
@@ -39,7 +50,7 @@
             <input class="d-none" type="text" wire:model="dateFilter" id="dateFilterInput-hidden">
         </div>
         <div class="col-auto">
-            <button wire:click="updateFilters" type="submit" class="btn btn-primary btn-dark">Buscar</button>
+            <button wire:click="updateFilters" type="submit" class="btn btn-secondary btn-secondary">Buscar</button>
         </div>
 
         <script>
@@ -118,16 +129,16 @@
         <div class="col-12">
             <div class="h3">Informações</div>
             <div class="row p-2 mt-3">
-                <livewire:src.documentacoes.collapse-document-list :tipo="'INFORMATION'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
+                <livewire:src.documentacoes.collapse-document-list :teamDataAndPermission="$teamDataAndPermission" :tipo="'INFORMATION'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
             </div>
         </div>
         <div class="col-12">
             <div class="h3">Registros de cerimônias</div>
             <div class="row p-2 mt-3">
-                <livewire:src.documentacoes.collapse-document-list :tipo="'SPRINT_PLANNING'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
-                <livewire:src.documentacoes.collapse-document-list :tipo="'DAILY_SCRUM'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
-                <livewire:src.documentacoes.collapse-document-list :tipo="'SPRINT_REVIEW'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
-                <livewire:src.documentacoes.collapse-document-list :tipo="'SPRINT_RETROSPECTIVE'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
+                <livewire:src.documentacoes.collapse-document-list :teamDataAndPermission="$teamDataAndPermission" :tipo="'SPRINT_PLANNING'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
+                <livewire:src.documentacoes.collapse-document-list :teamDataAndPermission="$teamDataAndPermission" :tipo="'DAILY_SCRUM'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
+                <livewire:src.documentacoes.collapse-document-list :teamDataAndPermission="$teamDataAndPermission" :tipo="'SPRINT_REVIEW'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
+                <livewire:src.documentacoes.collapse-document-list :teamDataAndPermission="$teamDataAndPermission" :tipo="'SPRINT_RETROSPECTIVE'" :textFilter="$routeParams['texto']" :taskMentionIdFilter="$routeParams['mencao_tarefa']" :memberMentionIdFilter="$routeParams['mencao_membro']" :dateFilter="$routeParams['data']" />
             </div>
         </div>
     </div>

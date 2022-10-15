@@ -9,8 +9,11 @@ class DocumentacoesBody extends Component
 {
     public $invalidSearchPattern = '/[^a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ0-9-' . '\s' . ']/u';
     protected $listeners = ['validateRouteParams'];
+
     public $alias;
     public $routeParams;
+
+    public $sessionParams, $teamDataAndPermission;
     public $taskMentions;
     public $memberMentions;
 
@@ -21,10 +24,48 @@ class DocumentacoesBody extends Component
 
     public function render()
     {
-        $this->taskMentions = self::fetchTaskMentions(session('user_data'));
-        $this->memberMentions = self::fetchMemberMentions(session('user_data'));
+        $this->sessionParams = session('user_data');
+        $this->teamDataAndPermission = self::fetchTeamDataAndPermission($this->sessionParams);
+
+        $this->taskMentions = self::fetchTaskMentions($this->sessionParams);
+        $this->memberMentions = self::fetchMemberMentions($this->sessionParams);
 
         return view('livewire.src.documentacoes.documentacoes-body');
+    }
+
+    private function fetchTeamDataAndPermission(array $sessionParams)
+    {
+        $teamQuery = <<<SQL
+            SELECT
+                e.id
+                , p.permitido AS permissao_gerenciar_documentacoes
+                , c.referencia AS cargo
+            FROM equipe e
+            JOIN squad s
+                ON e.id = s.equipe_id
+            JOIN equipe_usuario eu
+                ON e.id = eu.equipe_id
+            JOIN squad_usuario su
+                ON s.id = su.squad_id
+                AND eu.usuario_id = su.usuario_id
+            JOIN cargo c
+                ON su.cargo_id = c.id
+            JOIN permissao p
+                ON eu.grupo_permissao_id = p.grupo_permissao_id
+            JOIN tipo_permissao tp
+                ON p.tipo_permissao_id = tp.id
+            WHERE eu.usuario_id = ?
+                AND s.id = ?
+                AND tp.referencia = "[DOCS] MNG_DOCUMENTATIONS"
+        SQL;
+
+        return (array) DB::selectOne(
+            $teamQuery,
+            [
+                $sessionParams['usuario_id'],
+                $sessionParams['squad_id'],
+            ],
+        );
     }
 
     public function validateRouteParams()

@@ -1,4 +1,4 @@
-<div wire:ignore.self class="modal fade" id="modalChangeSquads-{{$squadData['id']}}" tabindex="-1">
+<div wire:ignore.self class="modal fade" id="modalExcludeSquads-{{$squadData['id']}}" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

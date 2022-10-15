@@ -11,6 +11,7 @@ class CollapseDocumentList extends Component
     public $taskMentionIdFilter;
     public $memberMentionIdFilter;
     public $dateFilter;
+    public $teamDataAndPermission;
 
     public $typeMap;
     public $unifiedFilters;

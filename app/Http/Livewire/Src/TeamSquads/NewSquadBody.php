@@ -56,7 +56,7 @@ class NewSquadBody extends Component
             ],
             [
                 'nomeSquad.required' => 'Nome da squad é obrigatório',
-                'nomeSquad.min' => 'Nome da squad precisa ter no mínio 3 caracteres',
+                'nomeSquad.min' => 'Nome da squad precisa ter no mínimo 3 caracteres',
                 'nomeSquad.max' => 'Nome da squad precisa ter no máximo 50 caracteres',
                 'descSquad.max' => 'Descrição da squad precisa ter no máximo 250 caracteres',
             ],
