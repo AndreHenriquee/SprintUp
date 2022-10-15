@@ -39,6 +39,10 @@ class CardModal extends Component
                     m.tarefa_origem_id IS NOT NULL
                     OR m.documentacao_origem_id IS NOT NULL
                 )
+                AND (
+                    d.excluida <> 1
+                    OR d.excluida IS NULL
+                )
         SQL;
 
         $mentions = DB::select(

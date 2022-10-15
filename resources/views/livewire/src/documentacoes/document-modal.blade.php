@@ -38,7 +38,8 @@
             </div>
             @if($allowedToManageDocs)
             <div class="modal-footer">
-                <button wire:click="saveChanges" class="btn btn-dark">Salvar alterações</button>
+                <button id="excludeDoc-{{$data['id']}}" class="btn btn-danger">Excluir documentação</button>
+                <button wire:click="saveChanges" class="btn btn-primary">Salvar alterações</button>
             </div>
             @endif
             <script>
@@ -57,6 +58,12 @@
                     Livewire.on("noDataChanged-{{$data['id']}}", () => {
                         alert('Nada foi alterado nesta documentação!');
                     })
+
+                    document.getElementById("excludeDoc-{{$data['id']}}").addEventListener('click', function() {
+                        if (confirm('Você realmente quer excluir esta documentação?\n\nEsta ação é irreversível! Pense bem antes de confirmar.') == true) {
+                            Livewire.emit("excludeDoc-{{$data['id']}}");
+                        }
+                    });
                 });
             </script>
         </div>

@@ -7,12 +7,16 @@ use Livewire\Component;
 
 class DocumentModal extends Component
 {
+    public $listeners = [];
+
     public $teamDataAndPermission, $data, $typeMap;
 
     public $docTitle, $docContent;
 
     public function render()
     {
+        $this->listeners = ['excludeDoc-' . $this->data['id'] => 'excludeDoc'];
+
         return view('livewire.src.documentacoes.document-modal');
     }
 
@@ -45,6 +49,15 @@ class DocumentModal extends Component
         }
 
         return false;
+    }
+
+    public function excludeDoc()
+    {
+        DB::table('documentacao')
+            ->where('id', (int) $this->data['id'])
+            ->update(['excluida' => 1]);
+
+        return redirect('/documentacoes');
     }
 
     public function saveChanges()
