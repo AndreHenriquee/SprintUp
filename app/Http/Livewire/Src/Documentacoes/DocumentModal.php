@@ -275,6 +275,11 @@ class DocumentModal extends Component
         $this->emit('addedDocMention-' . $this->data['id']);
     }
 
+    public function removeMention(int $mentionId)
+    {
+        DB::table('mencao')->where('id', $mentionId)->delete();
+    }
+
     public function saveChanges()
     {
         if ($this->dataValidated()) {

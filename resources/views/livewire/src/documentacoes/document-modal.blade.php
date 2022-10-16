@@ -28,18 +28,25 @@
                 <div class="row">
                     <div class="col-9 border-end">
                         <h5 class="modal-title mb-2">{{$typeMap[$data['tipo']]['titulo']}}</h5>
-                        <textarea <?= $allowedToManageDocs ? '' : 'disabled' ?> wire:model="docContent" id="docContent-{{$data['id']}}" class="form-control bg-white" rows="10" autocomplete="off" placeholder="Conteúdo da documentação"></textarea>
+                        <textarea <?= $allowedToManageDocs ? '' : 'disabled' ?> wire:model="docContent" id="docContent-{{$data['id']}}" class="form-control bg-white" rows="15" autocomplete="off" placeholder="Conteúdo da documentação"></textarea>
                         @error('docContent') <span class="text-danger error">{{ $message }}</span> @enderror
                     </div>
-                    <div class="col-3">
+                    <div class="col-3 overflow-auto" style="max-height: 400px;">
                         <div class="row">
                             <div class="col-12">
                                 <p class="text-wrap"><b>Menções a tarefas:</b></p>
                                 @if (!empty($mentions['tarefas']))
                                 @foreach($mentions['tarefas'] as $taskMention)
-                                <a href="/kanban" class="d-inline-block mb-1 me-1 bg-secondary text-light h6 p-1 rounded" style="cursor:pointer; text-decoration: none;" title="{{$taskMention->tarefa_referencia}} | {{$taskMention->tarefa_titulo}} ({{$taskMention->tarefa_status}})">
-                                    {{$taskMention->tarefa_referencia}}
-                                </a>
+                                <span class="d-inline-block mb-1 me-1 bg-secondary text-light h6 p-1 rounded">
+                                    <a href="/kanban" class="pe-1 text-light" style="cursor:pointer; text-decoration: none;" title="{{$taskMention->tarefa_referencia}} | {{$taskMention->tarefa_titulo}} ({{$taskMention->tarefa_status}})">
+                                        {{$taskMention->tarefa_referencia}}
+                                    </a>
+                                    <a wire:click="removeMention({{(int) $taskMention->id}})" class="ps-1 border-start text-light" style="cursor:pointer; text-decoration: none;" title="Remover esta menção">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="0.8rem" height="0.8rem" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+                                        </svg>
+                                    </a>
+                                </span>
                                 @endforeach
                                 @endif
                             </div>
@@ -75,9 +82,16 @@
                                 <p class="text-wrap"><b>Menções a membros da equipe:</b></p>
                                 @if (!empty($mentions['usuarios']))
                                 @foreach($mentions['usuarios'] as $memberMention)
-                                <a href="/membros-equipe/{{$teamDataAndPermission['id']}}" class="d-inline-block mb-1 me-1 bg-secondary text-light h6 p-1 rounded" style="cursor:pointer; text-decoration: none;" title="{{$memberMention->usuario_nome}} | {{$memberMention->usuario_email}}">
-                                    {{$memberMention->usuario_email}}
-                                </a>
+                                <span class="d-inline-block mb-1 me-1 bg-secondary text-light h6 p-1 rounded">
+                                    <a href="/membros-equipe/{{$teamDataAndPermission['id']}}" class="pe-1 text-light" style="cursor:pointer; text-decoration: none;" title="{{$memberMention->usuario_nome}} | {{$memberMention->usuario_email}}">
+                                        {{$memberMention->usuario_email}}
+                                    </a>
+                                    <a wire:click="removeMention({{(int) $memberMention->id}})" class="ps-1 border-start text-light" style="cursor:pointer; text-decoration: none;" title="Remover esta menção">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="0.8rem" height="0.8rem" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+                                        </svg>
+                                    </a>
+                                </span>
                                 @endforeach
                                 @endif
                             </div>
@@ -113,9 +127,16 @@
                                 <p class="text-wrap"><b>Menções a documentações:</b></p>
                                 @if (!empty($mentions['documentacoes']))
                                 @foreach($mentions['documentacoes'] as $docMention)
-                                <a href="/documentacoes/{{$docMention->documentacao_referencia}}/null/null/null" class="d-inline-block mb-1 me-1 bg-secondary text-light h6 p-1 rounded" style="cursor:pointer; text-decoration: none;" title="{{$docMention->documentacao_referencia}} | {{$docMention->documentacao_titulo}} ({{$docMention->documentacao_tipo}})">
-                                    {{$docMention->documentacao_referencia}}
-                                </a>
+                                <span class="d-inline-block mb-1 me-1 bg-secondary text-light h6 p-1 rounded">
+                                    <a href="/documentacoes/{{$docMention->documentacao_referencia}}/null/null/null" class="pe-1 text-light" style="cursor:pointer; text-decoration: none;" title="{{$docMention->documentacao_referencia}} | {{$docMention->documentacao_titulo}} ({{$docMention->documentacao_tipo}})">
+                                        {{$docMention->documentacao_referencia}}
+                                    </a>
+                                    <a wire:click="removeMention({{(int) $docMention->id}})" class="ps-1 border-start text-light" style="cursor:pointer; text-decoration: none;" title="Remover esta menção">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="0.8rem" height="0.8rem" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+                                        </svg>
+                                    </a>
+                                </span>
                                 @endforeach
                                 @endif
                             </div>
