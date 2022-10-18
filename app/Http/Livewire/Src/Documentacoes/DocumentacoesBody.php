@@ -38,8 +38,8 @@ class DocumentacoesBody extends Component
         $teamQuery = <<<SQL
             SELECT
                 e.id
-                , p.permitido AS permissao_gerenciar_documentacoes
                 , c.referencia AS cargo
+                , eu.grupo_permissao_id
             FROM equipe e
             JOIN squad s
                 ON e.id = s.equipe_id
@@ -50,22 +50,47 @@ class DocumentacoesBody extends Component
                 AND eu.usuario_id = su.usuario_id
             JOIN cargo c
                 ON su.cargo_id = c.id
-            JOIN permissao p
-                ON eu.grupo_permissao_id = p.grupo_permissao_id
-            JOIN tipo_permissao tp
-                ON p.tipo_permissao_id = tp.id
             WHERE eu.usuario_id = ?
                 AND s.id = ?
-                AND tp.referencia = "[DOCS] MNG_DOCUMENTATIONS"
         SQL;
 
-        return (array) DB::selectOne(
+        $teamData = (array) DB::selectOne(
             $teamQuery,
             [
                 $sessionParams['usuario_id'],
                 $sessionParams['squad_id'],
             ],
         );
+
+        $teamPermissionsQuery = <<<SQL
+            SELECT
+                tp.referencia
+                , p.permitido
+            FROM permissao p
+            JOIN tipo_permissao tp
+                ON p.tipo_permissao_id = tp.id
+            WHERE p.grupo_permissao_id = ?
+                AND tp.referencia IN (
+                    "[DOCS] MNG_DOCUMENTATIONS"
+                    , "[DOCS] DOCUMENTATION_COMMENTS"
+                )
+        SQL;
+
+        $teamPermissions = DB::select(
+            $teamPermissionsQuery,
+            [$teamData['grupo_permissao_id']]
+        );
+
+        $permissionMap = [
+            "[DOCS] MNG_DOCUMENTATIONS" => 'permissao_gerenciar_documentacoes',
+            "[DOCS] DOCUMENTATION_COMMENTS" => 'permissao_comentarios_documentacoes',
+        ];
+
+        foreach ($teamPermissions as $tp) {
+            $teamData[$permissionMap[$tp->referencia]] = $tp->permitido;
+        }
+
+        return $teamData;
     }
 
     public function validateRouteParams()
