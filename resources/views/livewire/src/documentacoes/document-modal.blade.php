@@ -4,6 +4,8 @@
         && ($data['tipo'] == 'INFORMATION'
             || in_array($teamDataAndPermission['cargo'], ['PO', 'SM'])
         );
+
+    $allowedToCommentAtDocs = $teamDataAndPermission['permissao_comentarios_documentacoes'];
     ?>
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-content">
@@ -35,8 +37,8 @@
                             <h5 class="modal-title mb-2">Comentários</h5>
                             <div class="col-12 mb-3">
                                 <div class="input-group">
-                                    <textarea wire:model="docComment" id="newCommentInput-{{$data['id']}}" class="form-control" style="resize: none;" placeholder="Escreva um novo comentário"></textarea>
-                                    <button wire:click="addComment" class="btn btn-outline-secondary">Comentar</button>
+                                    <textarea <?= $allowedToCommentAtDocs ? '' : 'disabled' ?> wire:model="docComment" id="newCommentInput-{{$data['id']}}" class="form-control" style="resize: none;" placeholder="Escreva um novo comentário"></textarea>
+                                    <button <?= $allowedToCommentAtDocs ? '' : 'disabled' ?> wire:click="addComment" class="btn btn-outline-secondary">Comentar</button>
                                 </div>
                             </div>
                             @if(!empty($commentList))
@@ -54,8 +56,8 @@
                                     </div>
                                     <div class="col-10">
                                         @if($isCommentFromLoggedUser)
-                                        <textarea wire:model="loggedUserComments.{{$comment['id']}}" id="loggedUserComment-{{$comment['id']}}" class="form-control" style="resize: none;" placeholder="Escreva um novo comentário"></textarea>
-                                        <button wire:click="updateComment({{(int) $comment['id']}}, `{{$comment['texto']}}`)" class="btn btn-outline-secondary mt-3">Atualizar comentário</button>
+                                        <textarea <?= $allowedToCommentAtDocs ? '' : 'disabled' ?> wire:model="loggedUserComments.{{$comment['id']}}" id="loggedUserComment-{{$comment['id']}}" class="form-control" style="resize: none;" placeholder="Escreva um novo comentário"></textarea>
+                                        <button <?= $allowedToCommentAtDocs ? '' : 'disabled' ?> wire:click="updateComment({{(int) $comment['id']}}, `{{$comment['texto']}}`)" class="btn btn-outline-secondary mt-3">Atualizar comentário</button>
                                         @else
                                         <textarea disabled id="otherUserComment-{{$comment['id']}}" class="form-control" style="resize: none;" placeholder="Atualize este comentário"></textarea>
                                         @endif
@@ -85,11 +87,13 @@
                                     <a href="/kanban" class="pe-1 text-light" style="cursor:pointer; text-decoration: none;" title="{{$taskMention->tarefa_referencia}} | {{$taskMention->tarefa_titulo}} ({{$taskMention->tarefa_status}})">
                                         {{$taskMention->tarefa_referencia}}
                                     </a>
+                                    @if($allowedToManageDocs)
                                     <a wire:click="removeMention({{(int) $taskMention->id}})" class="ps-1 border-start text-light" style="cursor:pointer; text-decoration: none;" title="Remover esta menção">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="0.8rem" height="0.8rem" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
                                             <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
                                         </svg>
                                     </a>
+                                    @endif
                                 </span>
                                 @endforeach
                                 @endif
@@ -98,7 +102,7 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="input-group">
-                                            <input autocomplete="off" class="form-control" list="mentionedTasks-{{$data['id']}}" id="taskMentionSelect-{{$data['id']}}" placeholder="Tarefa a mencionar">
+                                            <input <?= $allowedToManageDocs ? '' : 'disabled' ?> autocomplete="off" class="form-control" list="mentionedTasks-{{$data['id']}}" id="taskMentionSelect-{{$data['id']}}" placeholder="Tarefa a mencionar">
                                             <datalist id="mentionedTasks-{{$data['id']}}">
                                                 @foreach($taskList as $task)
                                                 @if(array_search($task->id, array_column($mentions['tarefas'], 'tarefa_mencionada_id')) === false)
@@ -108,8 +112,8 @@
                                                 @endif
                                                 @endforeach
                                             </datalist>
-                                            <input class="d-none" type="text" wire:model="taskMentionId" id="taskMentionSelect-{{$data['id']}}-hidden">
-                                            <button wire:click="addTaskMention" title="Adicionar menção a tarefa" class="btn btn-outline-secondary">
+                                            <input <?= $allowedToManageDocs ? '' : 'disabled' ?> class="d-none" type="text" wire:model="taskMentionId" id="taskMentionSelect-{{$data['id']}}-hidden">
+                                            <button <?= $allowedToManageDocs ? '' : 'disabled' ?> wire:click="addTaskMention" title="Adicionar menção a tarefa" class="btn btn-outline-secondary">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
                                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
@@ -130,11 +134,13 @@
                                     <a href="/membros-equipe/{{$teamDataAndPermission['id']}}" class="pe-1 text-light" style="cursor:pointer; text-decoration: none;" title="{{$memberMention->usuario_nome}} | {{$memberMention->usuario_email}}">
                                         {{$memberMention->usuario_email}}
                                     </a>
+                                    @if($allowedToManageDocs)
                                     <a wire:click="removeMention({{(int) $memberMention->id}})" class="ps-1 border-start text-light" style="cursor:pointer; text-decoration: none;" title="Remover esta menção">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="0.8rem" height="0.8rem" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
                                             <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
                                         </svg>
                                     </a>
+                                    @endif
                                 </span>
                                 @endforeach
                                 @endif
@@ -143,7 +149,7 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="input-group">
-                                            <input autocomplete="off" class="form-control" list="mentionedMembers-{{$data['id']}}" id="memberMentionSelect-{{$data['id']}}" placeholder="Membro a mencionar">
+                                            <input <?= $allowedToManageDocs ? '' : 'disabled' ?> autocomplete="off" class="form-control" list="mentionedMembers-{{$data['id']}}" id="memberMentionSelect-{{$data['id']}}" placeholder="Membro a mencionar">
                                             <datalist id="mentionedMembers-{{$data['id']}}">
                                                 @foreach($memberList as $member)
                                                 @if(array_search($member->id, array_column($mentions['usuarios'], 'usuario_mencionado_id')) === false)
@@ -153,8 +159,8 @@
                                                 @endif
                                                 @endforeach
                                             </datalist>
-                                            <input class="d-none" type="text" wire:model="memberMentionId" id="memberMentionSelect-{{$data['id']}}-hidden">
-                                            <button wire:click="addMemberMention" title="Adicionar menção a membro" class="btn btn-outline-secondary">
+                                            <input <?= $allowedToManageDocs ? '' : 'disabled' ?> class="d-none" type="text" wire:model="memberMentionId" id="memberMentionSelect-{{$data['id']}}-hidden">
+                                            <button <?= $allowedToManageDocs ? '' : 'disabled' ?> wire:click="addMemberMention" title="Adicionar menção a membro" class="btn btn-outline-secondary">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
                                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
@@ -175,11 +181,13 @@
                                     <a href="/documentacoes/{{$docMention->documentacao_referencia}}/null/null/null" class="pe-1 text-light" style="cursor:pointer; text-decoration: none;" title="{{$docMention->documentacao_referencia}} | {{$docMention->documentacao_titulo}} ({{$docMention->documentacao_tipo}})">
                                         {{$docMention->documentacao_referencia}}
                                     </a>
+                                    @if($allowedToManageDocs)
                                     <a wire:click="removeMention({{(int) $docMention->id}})" class="ps-1 border-start text-light" style="cursor:pointer; text-decoration: none;" title="Remover esta menção">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="0.8rem" height="0.8rem" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
                                             <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
                                         </svg>
                                     </a>
+                                    @endif
                                 </span>
                                 @endforeach
                                 @endif
@@ -188,7 +196,7 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="input-group">
-                                            <input autocomplete="off" class="form-control" list="docMembers-{{$data['id']}}" id="docMentionSelect-{{$data['id']}}" placeholder="Documentação a mencionar">
+                                            <input <?= $allowedToManageDocs ? '' : 'disabled' ?> autocomplete="off" class="form-control" list="docMembers-{{$data['id']}}" id="docMentionSelect-{{$data['id']}}" placeholder="Documentação a mencionar">
                                             <datalist id="docMembers-{{$data['id']}}">
                                                 @foreach($docList as $doc)
                                                 @if(array_search($doc->id, array_column($mentions['documentacoes'], 'documentacao_mencionada_id')) === false)
@@ -198,8 +206,8 @@
                                                 @endif
                                                 @endforeach
                                             </datalist>
-                                            <input class="d-none" type="text" wire:model="docMentionId" id="docMentionSelect-{{$data['id']}}-hidden">
-                                            <button wire:click="addDocMention" title="Adicionar menção a documentação" class="btn btn-outline-secondary">
+                                            <input <?= $allowedToManageDocs ? '' : 'disabled' ?> class="d-none" type="text" wire:model="docMentionId" id="docMentionSelect-{{$data['id']}}-hidden">
+                                            <button <?= $allowedToManageDocs ? '' : 'disabled' ?> wire:click="addDocMention" title="Adicionar menção a documentação" class="btn btn-outline-secondary">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
                                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
