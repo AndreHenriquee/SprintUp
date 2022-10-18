@@ -15,13 +15,15 @@ class DocumentModal extends Component
     public $taskList, $memberList, $docList;
 
     public $docTitle, $docContent;
-    public $taskMentionId, $memberMentionId, $docMentionId;
+    public $commentList, $taskMentionId, $memberMentionId, $docMentionId;
+    public $docComment, $loggedUserComments;
 
     public function render()
     {
         $this->listeners = ['excludeDoc-' . $this->data['id'] => 'excludeDoc'];
         $this->sessionParams = session('user_data');
 
+        $this->commentList = self::fetchCommentList((int) $this->data['id']);
         $this->taskList = self::fetchTaskList($this->sessionParams);
         $this->memberList = self::fetchMemberList($this->sessionParams);
         $this->docList = self::fetchDocList($this->sessionParams);
@@ -29,6 +31,29 @@ class DocumentModal extends Component
         $this->mentions = self::fetchMentions((int) $this->data['id']);
 
         return view('livewire.src.documentacoes.document-modal');
+    }
+
+    private static function fetchCommentList(int $docId)
+    {
+        $commentListQuery = <<<SQL
+            SELECT
+                c.id
+                , c.texto
+                , c.data_hora
+                , u.id AS usuario_id
+                , u.nome AS usuario_nome
+                , u.email AS usuario_email
+            FROM comentario c
+            JOIN usuario u
+                ON c.usuario_id = u.id
+            WHERE c.documentacao_id = ?
+            ORDER BY data_hora DESC
+        SQL;
+
+        return (array) DB::select(
+            $commentListQuery,
+            [$docId],
+        );
     }
 
     private static function fetchTaskList(array $sessionParams)
@@ -278,6 +303,68 @@ class DocumentModal extends Component
     public function removeMention(int $mentionId)
     {
         DB::table('mencao')->where('id', $mentionId)->delete();
+    }
+
+    private function validateComment(string $newCommentText, string $oldCommentText)
+    {
+        $eventName = 'invalidComment-' . $this->data['id'];
+
+        if (!empty($oldCommentText) && $newCommentText == $oldCommentText) {
+            $this->emit($eventName, 'Nada foi alterado neste comentário!');
+            return false;
+        }
+
+        $commentLength = strlen(utf8_decode($newCommentText));
+
+        if ($commentLength < 3 || $commentLength > 500) {
+            $this->emit($eventName, 'O comentário deve ter entre 3 a 500 caracteres!');
+            return false;
+        }
+
+        return true;
+    }
+
+    public function addComment()
+    {
+        $comment = trim($this->docComment);
+
+        if ($this->validateComment($comment, '')) {
+            $newCommentId = (int) DB::table('comentario')
+                ->insertGetId([
+                    'texto' => $comment,
+                    'data_hora' => date('Y-m-d H:i:s'),
+                    'usuario_id' => (int) $this->sessionParams['usuario_id'],
+                    'documentacao_id' => (int) $this->data['id'],
+                ]);
+
+            $this->emit(
+                'registeredComment-' . $this->data['id'],
+                $newCommentId,
+                true,
+                $comment
+            );
+        }
+    }
+
+    public function updateComment(int $commentId, string $oldComment)
+    {
+        $comment = trim($this->loggedUserComments[$commentId]);
+
+        if ($this->validateComment($comment, trim($oldComment))) {
+            DB::table('comentario')
+                ->where('id', $commentId)
+                ->update([
+                    'texto' => $comment,
+                    'data_hora' => date('Y-m-d H:i:s'),
+                ]);
+
+            $this->emit(
+                'registeredComment-' . $this->data['id'],
+                $commentId,
+                false,
+                $comment
+            );
+        }
     }
 
     public function saveChanges()

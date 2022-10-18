@@ -26,10 +26,54 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-9 border-end">
+                    <div class="col-9 border-end overflow-auto" style="max-height: 400px;">
                         <h5 class="modal-title mb-2">{{$typeMap[$data['tipo']]['titulo']}}</h5>
-                        <textarea <?= $allowedToManageDocs ? '' : 'disabled' ?> wire:model="docContent" id="docContent-{{$data['id']}}" class="form-control bg-white" rows="15" autocomplete="off" placeholder="Conteúdo da documentação"></textarea>
+                        <textarea <?= $allowedToManageDocs ? '' : 'disabled' ?> wire:model="docContent" id="docContent-{{$data['id']}}" class="form-control bg-white" rows="12" autocomplete="off" placeholder="Conteúdo da documentação"></textarea>
                         @error('docContent') <span class="text-danger error">{{ $message }}</span> @enderror
+                        <hr />
+                        <div class="row">
+                            <h5 class="modal-title mb-2">Comentários</h5>
+                            <div class="col-12 mb-3">
+                                <div class="input-group">
+                                    <textarea wire:model="docComment" id="newCommentInput-{{$data['id']}}" class="form-control" style="resize: none;" placeholder="Escreva um novo comentário"></textarea>
+                                    <button wire:click="addComment" class="btn btn-outline-secondary">Comentar</button>
+                                </div>
+                            </div>
+                            @if(!empty($commentList))
+                            <div class="col-12 px-4">
+                                @foreach($commentList as $comment)
+                                <?php
+                                $comment = (array) $comment;
+
+                                $isCommentFromLoggedUser = (int) $sessionParams['usuario_id'] == (int) $comment['usuario_id'];
+                                ?>
+                                <div class="row mb-2 p-2 rounded border">
+                                    <div class="col-2 border-end border-secondary">
+                                        <p class="fw-bold">{{$comment['usuario_nome']}}</p>
+                                        <p class="fs-6">{{date_format(date_create($comment['data_hora']),"d/m/Y H:i:s")}}</p>
+                                    </div>
+                                    <div class="col-10">
+                                        @if($isCommentFromLoggedUser)
+                                        <textarea wire:model="loggedUserComments.{{$comment['id']}}" id="loggedUserComment-{{$comment['id']}}" class="form-control" style="resize: none;" placeholder="Escreva um novo comentário"></textarea>
+                                        <button wire:click="updateComment({{(int) $comment['id']}}, `{{$comment['texto']}}`)" class="btn btn-outline-secondary mt-3">Atualizar comentário</button>
+                                        @else
+                                        <textarea disabled id="otherUserComment-{{$comment['id']}}" class="form-control" style="resize: none;" placeholder="Atualize este comentário"></textarea>
+                                        @endif
+                                    </div>
+                                    <script>
+                                        document.addEventListener('livewire:load', function() {
+                                            var commentText = `{{$comment['texto']}}`;
+
+                                            var comment = document.getElementById("{{$isCommentFromLoggedUser ? 'loggedUserComment' : 'otherUserComment'}}-{{$comment['id']}}");
+                                            comment.value = commentText;
+                                            comment.dispatchEvent(new Event('input'));
+                                        });
+                                    </script>
+                                </div>
+                                @endforeach
+                            </div>
+                            @endif
+                        </div>
                     </div>
                     <div class="col-3 overflow-auto" style="max-height: 400px;">
                         <div class="row">
@@ -168,9 +212,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="row">
-                    <b class="modal-title">Comentários</b>
-                </div> -->
             </div>
             @if($allowedToManageDocs)
             <div class="modal-footer">
@@ -215,11 +256,29 @@
 
                     Livewire.on("noDataChanged-{{$data['id']}}", () => {
                         alert('Nada foi alterado nesta documentação!');
-                    })
+                    });
+
+                    Livewire.on("invalidComment-{{$data['id']}}", message => {
+                        alert(message);
+                    });
+
+                    Livewire.on("registeredComment-{{$data['id']}}", (commentId, isNewComment, commentText) => {
+                        var comment = document.getElementById("loggedUserComment-" + commentId);
+                        comment.value = commentText;
+                        comment.dispatchEvent(new Event('input'));
+
+                        if (isNewComment) {
+                            var commentTextArea = document.getElementById("newCommentInput-{{$data['id']}}");
+                            commentTextArea.value = null;
+                            commentTextArea.dispatchEvent(new Event('input'));
+                        }
+
+                        alert('O comentário foi ' + (commentId ? 'atualizado' : 'adicionado') + ' com sucesso!');
+                    });
 
                     Livewire.on("noMentionSelected-{{$data['id']}}", message => {
                         alert(message);
-                    })
+                    });
 
                     Livewire.on("addedTaskMention-{{$data['id']}}", () => {
                         document.getElementById("taskMentionSelect-{{$data['id']}}").value = null;
