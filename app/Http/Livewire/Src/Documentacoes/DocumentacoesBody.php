@@ -152,7 +152,7 @@ class DocumentacoesBody extends Component
 
     private static function fetchMemberMentions(array $sessionParams)
     {
-        $taskMentionsQuery = <<<SQL
+        $memberMentionsQuery = <<<SQL
             SELECT
                 u.id
                 , u.email
@@ -165,7 +165,7 @@ class DocumentacoesBody extends Component
         SQL;
 
         return (array) DB::select(
-            $taskMentionsQuery,
+            $memberMentionsQuery,
             [$sessionParams['squad_id']],
         );
     }

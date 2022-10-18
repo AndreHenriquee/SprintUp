@@ -36,6 +36,7 @@ class NewSquadBody extends Component
             WHERE e.id = ?
                 AND eu.usuario_id = ?
                 AND tp.referencia = "[WORKFLOW] MNG_SQUADS"
+                AND p.permitido = 1
         SQL;
 
         return (array) DB::selectOne(
@@ -117,10 +118,11 @@ class NewSquadBody extends Component
         ]);
 
         DB::table('coluna')->insert([
-            ['nome' => "Backlog", 'ordem' => 0, 'inicio_tarefa' => 0, 'fim_tarefa' => 0, 'quadro_kanban_id' => $kanbanId],
+            ['nome' => "Backlog", 'ordem' => 0, 'inicio_tarefa' => 1, 'fim_tarefa' => 0, 'quadro_kanban_id' => $kanbanId],
             ['nome' => "To Do", 'ordem' => 1, 'inicio_tarefa' => 1, 'fim_tarefa' => 0, 'quadro_kanban_id' => $kanbanId],
             ['nome' => "Doing", 'ordem' => 2, 'inicio_tarefa' => 0, 'fim_tarefa' => 0, 'quadro_kanban_id' => $kanbanId],
-            ['nome' => "Done", 'ordem' => 3, 'inicio_tarefa' => 0, 'fim_tarefa' => 1, 'quadro_kanban_id' => $kanbanId]
+            ['nome' => "Done", 'ordem' => 3, 'inicio_tarefa' => 0, 'fim_tarefa' => 1, 'quadro_kanban_id' => $kanbanId],
+            ['nome' => "Finalized", 'ordem' => 0, 'inicio_tarefa' => 0, 'fim_tarefa' => 1, 'quadro_kanban_id' => $kanbanId],
         ]);
     }
 
