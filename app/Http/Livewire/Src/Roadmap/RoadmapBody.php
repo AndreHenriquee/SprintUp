@@ -27,9 +27,8 @@ class RoadmapBody extends Component
 
         if (isset($this->teamData['id'])) {
             $this->features = $this->fetchFeatures($this->teamData['id']);
+            $this->products = self::fetchProcucts($this->teamData['id']);
         };
-
-        $this->products = self::fetchProcucts($this->teamData['id']);
 
         return view('livewire.src.roadmap.roadmap-body');
     }
@@ -70,9 +69,8 @@ class RoadmapBody extends Component
         );
     }
 
-    private static function fetchTeamData($teamId, array $sessionParams)
+    private static function fetchTeamData($teamId, $sessionParams)
     {
-
         if (!$teamId) {
             $teamBySquadQuery = <<<SQL
                 SELECT

@@ -34,16 +34,6 @@ function buildView(
     );
 }
 
-Route::get('/login/{hash_convite?}', function (string $hash_convite = '') {
-    return buildView(
-        'login',
-        'Sprint Up | Login',
-        'src.login.login-body',
-        false,
-        ['hash_convite' => $hash_convite]
-    );
-});
-
 Route::get('/', function () {
     return buildView(
         'decide-home',
@@ -53,11 +43,39 @@ Route::get('/', function () {
     );
 });
 
+Route::get('login/{hash_convite?}', function (string $hash_convite = '') {
+    return buildView(
+        'login',
+        'Sprint Up | Login',
+        'src.login.login-body',
+        false,
+        ['hash_convite' => $hash_convite]
+    );
+});
+
+Route::get('login-cliente', function () {
+    return buildView(
+        'login-cliente',
+        'Sprint Up | Login do cliente',
+        'src.customer-login.customer-login-body',
+        false
+    );
+});
+
 Route::get('register', function () {
     return buildView(
         'register',
         'Sprint Up | Cadastro',
         'src.register.register-form',
+        false
+    );
+});
+
+Route::get('register-cliente', function () {
+    return buildView(
+        'register-cliente',
+        'Sprint Up | Cadastro do cliente',
+        'src.customer-register.customer-register-body',
         false
     );
 });
@@ -125,6 +143,15 @@ Route::get('roadmap/{produto_id?}', function ($produto_id = null) {
         'src.roadmap.roadmap-body',
         true,
         ['produto_id' => $produto_id]
+    );
+});
+
+Route::get('roadmap-cliente/', function () {
+    return buildView(
+        'roadmap-cliente-escolha-time',
+        'Sprint Up | Roadmap - Visão do cliente - Escolha da equipe',
+        'src.roadmap-team-choice.roadmap-team-choice-body',
+        false,
     );
 });
 

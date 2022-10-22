@@ -1,7 +1,7 @@
 <div class="container {{!isset($routeParams['equipe_id']) ? '' : 'pt-4'}}">
     @if (empty($features['TO_DO']) && empty($features['DOING']) && empty($features['DONE']))
     <div class="alert alert-warning mt-5" role="alert">
-        Esta equipe não tem nenhuma funcionalidade para mostrar
+        Esta equipe não existe ou não tem nenhuma funcionalidade para mostrar
     </div>
     <script>
         document.addEventListener('livewire:load', function() {
