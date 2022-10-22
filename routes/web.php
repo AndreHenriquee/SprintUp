@@ -165,6 +165,26 @@ Route::get('roadmap-cliente/{equipe_id}/{produto_id?}', function ($equipe_id,  $
     );
 });
 
+Route::get('roadmap-produtos/{equipe_id}/', function ($equipe_id) {
+    return buildView(
+        'roadmap-produtos',
+        'Sprint Up | Produtos do Roadmap',
+        'src.roadmap-products.roadmap-products-body',
+        true,
+        ['equipe_id' => $equipe_id]
+    );
+});
+
+Route::get('novo-produto/{equipe_id}/', function ($equipe_id) {
+    return buildView(
+        'novo-produto',
+        'Sprint Up | Novo produtos no Roadmap',
+        'src.roadmap-products.roadmap-new-product-body',
+        true,
+        ['equipe_id' => $equipe_id]
+    );
+});
+
 Route::get('equipes', function () {
     return buildView(
         'equipes',

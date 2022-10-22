@@ -8,8 +8,12 @@ use Illuminate\Support\Facades\DB;
 class RoadmapBody extends Component
 {
     protected $listeners = ['validateRouteParams'];
+
     public $alias;
     public $routeParams;
+
+    public $sessionParams, $teamDataAndPermission;
+
     public $teamData;
     public $features;
     public $products;
@@ -18,9 +22,15 @@ class RoadmapBody extends Component
 
     public function render()
     {
+        $this->sessionParams = session('user_data');
+
+        if (!empty($this->sessionParams)) {
+            $this->teamDataAndPermission = self::fetchTeamDataAndPermission($this->sessionParams);
+        }
+
         $this->teamData = self::fetchTeamData(
             $this->routeParams['equipe_id'] ?? null,
-            session('user_data')
+            $this->sessionParams
         );
 
         $this->features = ['TO_DO' => [], 'DOING' => [], 'DONE' => []];
@@ -31,6 +41,42 @@ class RoadmapBody extends Component
         };
 
         return view('livewire.src.roadmap.roadmap-body');
+    }
+
+    private function fetchTeamDataAndPermission(array $sessionParams)
+    {
+        $teamQuery = <<<SQL
+            SELECT
+                e.id
+                , e.nome
+                , p.permitido AS permissao_gerenciar_produtos
+                , c.referencia AS cargo
+            FROM equipe e
+            JOIN squad s
+                ON e.id = s.equipe_id
+            JOIN equipe_usuario eu
+                ON e.id = eu.equipe_id
+            JOIN squad_usuario su
+                ON s.id = su.squad_id
+                AND eu.usuario_id = su.usuario_id
+            JOIN cargo c
+                ON su.cargo_id = c.id
+            JOIN permissao p
+                ON eu.grupo_permissao_id = p.grupo_permissao_id
+            JOIN tipo_permissao tp
+                ON p.tipo_permissao_id = tp.id
+            WHERE s.id = ?
+                AND eu.usuario_id = ?
+                AND tp.referencia = "[ROADMAP] MNG_PRODUCTS"
+        SQL;
+
+        return (array) DB::selectOne(
+            $teamQuery,
+            [
+                $sessionParams['squad_id'],
+                $sessionParams['usuario_id'],
+            ],
+        );
     }
 
     public function validateRouteParams()
