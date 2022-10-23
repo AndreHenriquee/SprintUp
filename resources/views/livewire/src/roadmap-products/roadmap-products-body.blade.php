@@ -31,7 +31,7 @@
             <tbody>
                 <?php $numberOfProducts = count($teamProducts) ?>
                 @foreach($teamProducts as $teamProduct)
-                <tr>
+                <tr style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#modalProduct-{{$teamProduct->id}}">
                     <td>{{$teamProduct->nome}}</td>
                     <td>{{$teamProduct->descricao}}</td>
                     <td>{{$teamProduct->numero_funcionalidades}}</td>
@@ -47,6 +47,7 @@
                         @endif
                     </td>
                 </tr>
+                <livewire:src.roadmap-products.product-modal :data="(array) $teamProduct" :teamId="$teamDataAndPermission['id']" />
                 @endforeach
             </tbody>
         </table>

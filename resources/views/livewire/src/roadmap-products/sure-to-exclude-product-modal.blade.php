@@ -7,7 +7,7 @@
             </div>
             <div class="modal-body">
                 <p>Você o produto <b>{{$productData['nome']}}</b>.</p>
-                <p><b>Todas as funcionalidades dele ({{$numberOfProducts}} no total) deixarão de aparecer no Roadmap da equipe</b>.</p>
+                <p><b>Todas as funcionalidades dele ({{$productData['numero_funcionalidades']}} no total) deixarão de aparecer no Roadmap da equipe</b>.</p>
                 @if($numberOfProducts == 1)
                 <p>Este produto também é o <b>único</b> existente nesta equipe, o que significa que excluí-lo fará a equipe <b>não aparecer no Roadmap para o cliente</b>.</p>
                 @endif

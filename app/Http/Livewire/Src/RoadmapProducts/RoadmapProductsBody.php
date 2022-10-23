@@ -27,7 +27,8 @@ class RoadmapProductsBody extends Component
     {
         $teamQuery = <<<SQL
             SELECT
-                e.nome
+                e.id
+                , e.nome
                 , eu.grupo_permissao_id
                 , p.permitido AS permissao_gerenciar_produtos
             FROM equipe e
