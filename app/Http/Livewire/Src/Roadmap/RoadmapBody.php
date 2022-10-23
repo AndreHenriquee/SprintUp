@@ -199,6 +199,10 @@ class RoadmapBody extends Component
                 ON p.equipe_id = e.id
                 AND e.id = ?
                 AND e.roadmap_ativo = 1
+            WHERE (
+                p.excluido <> 1
+                OR p.excluido IS NULL
+            )
             ORDER BY p.nome ASC, f.data_fim DESC
         SQL;
 
@@ -224,6 +228,10 @@ class RoadmapBody extends Component
                 , nome
             FROM produto
             WHERE equipe_id = ?
+                AND (
+                    excluido <> 1
+                    OR excluido IS NULL
+                )
             ORDER BY nome ASC
         SQL;
 

@@ -64,6 +64,10 @@ class RoadmapProductsBody extends Component
             LEFT JOIN funcionalidade f
                 ON p.id = f.produto_id
             WHERE p.equipe_id = ?
+                AND (
+                    p.excluido <> 1
+                    OR p.excluido IS NULL
+                )
             GROUP BY p.id, p.nome, p.descricao
         SQL;
 

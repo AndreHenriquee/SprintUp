@@ -1,6 +1,10 @@
 <div class="container {{!isset($routeParams['equipe_id']) ? '' : 'pt-4'}}">
     @if (empty($features['TO_DO']) && empty($features['DOING']) && empty($features['DONE']))
-    @if ($teamDataAndPermission['permissao_gerenciar_produtos'] && in_array($teamDataAndPermission['cargo'], ['PO', 'SM']))
+    @if (
+    !empty($teamDataAndPermission) &&
+    ($teamDataAndPermission['permissao_gerenciar_produtos']
+    && in_array($teamDataAndPermission['cargo'], ['PO', 'SM']))
+    )
     <div class="row">
         <div class="col">
             <a href="/roadmap-produtos/{{$teamDataAndPermission['id']}}" class="btn btn-dark" style="cursor:pointer; text-decoration: none;">

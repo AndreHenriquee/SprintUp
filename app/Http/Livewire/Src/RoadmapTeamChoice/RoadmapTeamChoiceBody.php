@@ -33,6 +33,10 @@ class RoadmapTeamChoiceBody extends Component
             LEFT JOIN funcionalidade f
                 ON p.id = f.produto_id
             WHERE e.roadmap_ativo = 1
+                AND (
+                    p.excluido <> 1
+                    OR p.excluido IS NULL
+                )
             GROUP BY e.id, e.nome, e.descricao
             ORDER BY e.nome ASC
         SQL;
