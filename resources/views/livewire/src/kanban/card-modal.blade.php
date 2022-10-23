@@ -3,7 +3,11 @@
         <div class="modal-content">
             <div class="modal-header">
                 <label style="width:auto" class="modal-title">{{$data['referencia']}}</label>
-                <input type="text" id="title-{{$data['id']}}" class="form-control" wire:model="titulo" style="background-color:rgba(240, 240, 240, 0.35);border:none;font-size:15px;width:950px;margin-left:10px;" value="">
+                @if($teamDataAndPermission['cargo'] != "ST")
+                    <input type="text" id="title-{{$data['id']}}" class="form-control" wire:model="titulo" style="background-color:rgba(240, 240, 240, 0.35);border:none;font-size:17px;width:950px;margin-left:10px;" value="">
+                    @else
+                    <label style="border:none;font-size:17px;width:950px;margin-left:10px;" class="modal-title">{{$data['titulo']}}</label>
+                @endif
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -27,61 +31,65 @@
 
                         <p class="text-wrap mt-3"><b>Status:</b></p>
 
-                        <select class="form-control mb-2" id="tarefaStatus-{{$data['id']}}" wire:model="statusSelecionado" style="background-color:rgba(195, 195, 195, 0.35);border:none;">
-                            @foreach($columns as $column)
+                        <select class="form-select mb-2" id="tarefaStatus-{{$data['id']}}" wire:model="statusSelecionado" style="background-color:rgba(195, 195, 195, 0.35);border:none;">
+                            <option selected value="0">Escolher um status</option>    
+                        @foreach($columns as $column)
                             <?php
                             $isCurrentColumn = (int) $data['id_coluna'] == (int) ((array) $column)['id'];
                             ?>
-                            <option <?= $isCurrentColumn ? 'disabled' : '' ?> value="<?= ((array) $column)['id'] ?>">
+                            <option <?= $isCurrentColumn ? 'disabled selected' : '' ?> value="<?= ((array) $column)['id'] ?>">
                                 <?= ((array) $column)['nome'] ?> <?= $isCurrentColumn ? ' (Coluna atual)' : '' ?>
                             </option>
                             @endforeach
                         </select>
-
-
-                        <p class="text-wrap mt-3"><b>Prioridade:</b> </p>
-                        <input class="form-control mb-3" wire:model="prioridade" id="prioridade-{{$data['id']}}" value="{{$data['prioridade']}}" style="background-color:rgba(195, 195, 195, 0.35);border:none">
-                        @if($data['estimativa'])
-                        <p><b>Estimativa:</b> {{$data['estimativa']}}{{$data['extensao']}} @else
-                        <p><b>Estimativa:</b> Nenhuma
-                            @endif
-                        <div class="row">
-                            <div class="col">
-                                <input class="form-check-input" wire:model="estimativeRadio" name="estimativeRadio" id="hoursRadio" type="radio" value="H">
-                                <label class="form-check-label" type="radio">
-                                    Horas
-                                </label>
-                            </div>
-
-                            <div class="col">
-                                <input class="form-check-input" wire:model="estimativeRadio" name="estimativeRadio" id="storyPointsRadio" type="radio" value="Sp">
-                                <label class="form-check-label" type="radio">
-                                    Story Points
-                                </label>
-                            </div>
-                        </div>
-                        @if($estimativeRadio == "Sp")
-                        <div id="storyPoints">
-                            <p class="form-label mt-3">
-                                <b>Story Points: </b>
-                            </p>
-                            <select class="form-select" wire:model="spValue" id="selectPointsEstimative" style="background-color:rgba(195, 195, 195, 0.35);border:none">
-                                <option value="" selected>Selecione a estimativa</option>
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="5">5</option>
-                                <option value="8">8</option>
-                                <option value="13">13</option>
-                            </select>
-                        </div>
+                        <p class="text-wrap mt-3"><b>Prioridade:</b> {{$data['prioridade']}}</p>
+                        @if($teamDataAndPermission['cargo'] != "ST")
+                            <input class="form-control mb-3" wire:model="prioridade" id="prioridade-{{$data['id']}}" value="{{$data['prioridade']}}" style="background-color:rgba(195, 195, 195, 0.35);border:none">
                         @endif
-                        @if($estimativeRadio == "H")
-                        <div id="hours">
-                            <p class="form-label mt-3"><b>Horas: </b> </p>
-                            <input type="number" id="inputId" class="form-control mb-2" wire:model="timeValue" style="background-color:rgba(195, 195, 195, 0.35);border:none">
-                        </div>
+
+                        @if($data['estimativa'])
+                        <p><b>Estimativa:</b> {{$data['estimativa']}}{{$data['extensao']}} @else <p><b>Estimativa:</b> Nenhuma
+                        @endif
+
+                        @if($teamDataAndPermission['cargo'] != "ST")
+                            <div class="row">
+                                <div class="col">
+                                    <input class="form-check-input" wire:model="estimativeRadio" name="estimativeRadio" id="hoursRadio" type="radio" value="H">
+                                    <label class="form-check-label">
+                                        Horas
+                                    </label>
+                                </div>
+
+                                <div class="col">
+                                    <input class="form-check-input" wire:model="estimativeRadio" name="estimativeRadio" id="storyPointsRadio" type="radio" value="Sp">
+                                    <label class="form-check-label">
+                                        Story Points
+                                    </label>
+                                </div>
+                            </div>
+                            @if($estimativeRadio == "Sp")
+                                <div style="" id="storyPoints">
+                                    <p class="form-label mt-3">
+                                        <b>Story Points: </b> 
+                                    </p>
+                                    <select class="form-select" wire:model="spValue" id="selectPointsEstimative" style="background-color:rgba(195, 195, 195, 0.35);border:none">
+                                        <option value="" selected>Selecione a estimativa</option>
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="5">5</option>
+                                        <option value="8">8</option>
+                                        <option value="13">13</option>
+                                    </select>
+                                </div>
+                            @endif
+                            @if($estimativeRadio == "H")
+                            <div style="" id="hours">
+                                <p class="form-label mt-3"><b>Horas: </b> </p>
+                                <input type="number" id="inputId" class="form-control mb-2" wire:model="timeValue" style="background-color:rgba(195, 195, 195, 0.35);border:none">
+                            </div>
+                            @endif
                         @endif
                         <div class="row">
                             <div class="col-12">
@@ -106,8 +114,13 @@
                                     @endif
                                 </div>
                                 <div class="d-flex flex-row-reverse">
-                                    <button wire:click="updateCard" class="col-2 btn btn-dark mt-3 mb-3" data-bs-toggle="modal" data-bs-target="#modalCard" style="width:100%">Editar Card</button>
+                                    <button wire:click="updateCard" class="col-2 btn btn-dark mt-3 mb-3" style="width:100%">Editar Card</button>
                                 </div>
+                                @if($data['numero']) <p class="text-wrap" style="font-size:12px"><b>Sprint Numero:</b> {{$data['numero']}}</p> @endif
+                                @if($data['inicio'] && $data['fim'])
+                                    <p class="text-wrap" style="font-size:12px"><b>Inicio da Sprint:</b> {{date_format(date_create($data['inicio']),"d/m/Y")}}</p>
+                                    <p class="text-wrap" style="font-size:12px"><b>Fim da Sprint:</b> {{date_format(date_create($data['fim']),"d/m/Y")}}</p>
+                                @endif
                                 <p class="text-wrap" style="font-size:12px"><b>Criado em:</b> {{date_format(date_create($data['data_hora_criacao']),"d/m/Y H:i:s")}}</p>
                                 <p class="text-wrap" style="font-size:12px"><b>Atualizado em:</b> {{date_format(date_create($data['data_hora_ultima_movimentacao']),"d/m/Y H:i:s")}}</p>
                             </div>
@@ -130,7 +143,7 @@
                     inputValue = input.value;
 
                 hiddenInput.value = '0';
-
+        
                 for (var i = 0; i < options.length; i++) {
                     var option = options[i];
                     if (option.innerText.trim() === inputValue.trim()) {
@@ -157,8 +170,6 @@
             titleInput.value = taskTitle;
             titleInput.dispatchEvent(new Event('input'));
 
-            var ownerInput = document.getElementById("selectedTaskMember-{{$data['id']}}");
-            ownerInput.dispatchEvent(new Event('select'));
         });
     </script>
 </div>

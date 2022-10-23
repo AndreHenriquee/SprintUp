@@ -14,7 +14,7 @@
     ) {
     ?>
         @if ($loadMenu)
-        <livewire:page.menu :alias="$alias" />
+        <livewire:page.menu :alias="$alias" :routeParams="$routeParams" />
         @endif
         @if (empty($routeParams))
         <livewire:is :component="$body" :alias="$alias" />

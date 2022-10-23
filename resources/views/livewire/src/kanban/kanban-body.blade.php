@@ -8,11 +8,20 @@
             {{$data['descricao']}}
         </div>
         @endif
+        @if($teamDataAndPermission['cargo'] != "ST")
         <div>
-            <a href="/kanban/create-card">
-                <button class="col-2 btn btn-dark mt-3 mb-3">Criar Card</button>
+            <a href="/backlog/{{$teamDataAndPermission['equipe_id']}}/{{$teamDataAndPermission['squad_id']}}">
+                <button class="col-3 btn btn-dark mt-3 mb-3">Gerenciar backlog da squad</button>
             </a>
         </div>
+        @endif
+        @if($sprintDetails)
+            <div class="col-12">
+                <div class="row p-2 mt-3">
+                    <livewire:src.kanban.collapse-sprint-list :sprintDetails="(array) $sprintDetails" />
+                </div>
+            </div>
+        @endif
     </div>
     <hr class="opacity-100">
     <div class="row mb-3 rounded p-1" style="background-color:#f2f2f2">
@@ -26,7 +35,7 @@
         <div class="col-12">
             <div class="row vh-100 pe-4" style="overflow: overlay;">
                 @foreach($columns as $column)
-                <livewire:src.kanban.coluna-conteudo :columnData="(array) $column" :allColumns="(array) $columns" />
+                <livewire:src.kanban.coluna-conteudo :alias="$alias" :columnData="(array) $column" :allColumns="(array) $columns" />
                 @endforeach
             </div>
         </div>

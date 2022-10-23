@@ -119,7 +119,7 @@ class RegisterForm extends Component
     {
         if (self::fieldsValidation()) {
             $usuarioId = DB::table('usuario')->insertGetId([
-                'nome' => $this->nome,
+                'nome' => ucwords($this->nome),
                 'email' => $this->email,
                 'senha' => md5($this->senha),
                 'data_nascimento' => $this->data_nascimento
