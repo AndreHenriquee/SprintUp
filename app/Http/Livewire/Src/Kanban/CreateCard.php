@@ -12,7 +12,6 @@ class CreateCard extends Component
     public $taskMentionIdFilter;
     public $squadMemberId;
     public $squadMembers;
-    public $squadMember;
     public $descricao;
     public $titulo;
     public $taskOwnerId;
@@ -20,12 +19,17 @@ class CreateCard extends Component
     public $spValue;
     public $timeValue;
     public $estimativeRadio;
+    public $sessionParams;
+    public $routeParams;
+
     protected $listeners = ['setEstimatives' => 'setEstimatives'];
 
     public function render()
     {
+        $this->sessionParams = session('user_data');
         $this->squadMembers = self::fetchSquadMembers(session('user_data'));
         $this->userInfo = self::fetchUserInfo(session('user_data'));
+        $this->teamDataAndPermission = self::fetchTeamDataAndPermission($this->sessionParams);
         return view('livewire.src.kanban.create-card');
     }
 
@@ -78,7 +82,8 @@ class CreateCard extends Component
                 'estimativa_tarefa_id' => $estimativaId,
             ]);
 
-            return redirect('/kanban');
+
+            return redirect('/backlog/'.$this->teamDataAndPermission['squad_id'].'/'.$this->teamDataAndPermission['equipe_id']);
         }
     }
 
@@ -90,17 +95,16 @@ class CreateCard extends Component
         $referenciaQuery =
             DB::table('tarefa')
             ->select('referencia')
-            ->where('squad_id', '=', $sessionParams['squad_id'])
-            ->orderByDesc('referencia')
-            ->limit(1);
+            ->where('squad_id', '=', $sessionParams['squad_id']);
 
         if (!$referenciaQuery->count() > 0) {
             $referencia .= "-1";
         } else {
-            $stringArray = explode("-", $referenciaQuery->first()->referencia);
-            $contador = $stringArray[1] + 1;
+            $cardsQuantity = (int) $referenciaQuery->count();
+            $contador = $cardsQuantity + 1;
             $referencia = "-" . $contador;
         }
+
         return $referencia;
     }
 
@@ -183,5 +187,44 @@ class CreateCard extends Component
             [$sessionParams['usuario_id'], $sessionParams['squad_id']],
         );
 
+    }
+
+    private function fetchTeamDataAndPermission(array $sessionParams)
+    {
+        
+        $teamQuery = <<<SQL
+            SELECT e.id AS equipe_id
+                , s.id AS squad_id
+                , e.nome
+                , s.nome squad_nome
+                , p.permitido AS permissao_gerenciar_backlog
+                , c.referencia AS cargo
+            FROM equipe e
+            JOIN squad s
+                ON e.id = s.equipe_id
+            JOIN equipe_usuario eu
+                ON e.id = eu.equipe_id
+            JOIN squad_usuario su
+                ON s.id = su.squad_id
+                AND eu.usuario_id = su.usuario_id
+            JOIN cargo c
+                ON su.cargo_id = c.id
+            JOIN permissao p
+                ON eu.grupo_permissao_id = p.grupo_permissao_id
+            JOIN tipo_permissao tp
+                ON p.tipo_permissao_id = tp.id
+            WHERE s.id = ?
+                AND eu.usuario_id = ?
+                AND tp.referencia = "[BACKLOG] MNG_SQUAD_SPRINTS"
+                AND p.permitido = 1
+        SQL;
+
+        return (array) DB::selectOne(
+            $teamQuery,
+            [
+                $sessionParams['squad_id'],
+                $sessionParams['usuario_id'],
+            ],
+        );
     }
 }

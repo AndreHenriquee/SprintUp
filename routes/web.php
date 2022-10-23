@@ -98,11 +98,11 @@ Route::get('kanban', function () {
     );
 });
 
-Route::get('kanban/create-card', function () {
+Route::get('create-card', function () {
     return buildView(
         'kanban-create-card',
         'Sprint Up | Criar card',
-        'src.kanban.create-card'
+        'src.kanban.create-card',
     );
 });
 
@@ -133,6 +133,45 @@ Route::get('nova-documentacao/{equipe_id}', function (int $equipe_id) {
         'src.documentacoes.new-document',
         true,
         ['equipe_id' => $equipe_id]
+    );
+});
+
+Route::get('backlog/{equipe_id}/{squad_id}', function (int $equipe_id, int $squad_id) {
+    return buildView(
+        'backlog',
+        'Sprint Up | Backlog',
+        'src.backlog.backlog',
+        true,
+        [
+            'equipe_id' => $equipe_id,
+            'squad_id' => $squad_id,
+        ]
+    );
+});
+
+Route::get('backlog/{equipe_id}/{squad_id}/create-sprint', function (int $equipe_id,int $squad_id) {
+    return buildView(
+        'backlog',
+        'Sprint Up | Nova Sprint',
+        'src.backlog.create-sprint',
+        true,
+        [
+            'equipe_id' => $equipe_id,
+            'squad_id' => $squad_id,
+        ]
+    );
+});
+
+Route::get('backlog/{equipe_id}/{squad_id}/list-sprints', function (int $equipe_id,int $squad_id) {
+    return buildView(
+        'backlog',
+        'Sprint Up | Listagem de Sprints',
+        'src.backlog.list-sprints',
+        true,
+        [
+            'equipe_id' => $equipe_id,
+            'squad_id' => $squad_id,
+        ]
     );
 });
 

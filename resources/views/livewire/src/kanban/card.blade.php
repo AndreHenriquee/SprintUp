@@ -7,6 +7,7 @@
         @else
         <p>Responsável: Nenhum
         @endif
+        <p>Status {{$data['nome_coluna']}}
         <p>Relator: {{$data['usuario_relator_nome']}}
         @if($data['estimativa'])
         <p>Estimativa: {{$data['estimativa']}}{{$data['extensao']}}
