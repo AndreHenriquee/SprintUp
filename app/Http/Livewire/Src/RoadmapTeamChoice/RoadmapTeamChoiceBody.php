@@ -25,7 +25,7 @@ class RoadmapTeamChoiceBody extends Component
                 e.id
                 , e.nome
                 , e.descricao
-                , COUNT(p.id) AS numero_produtos
+                , COUNT(DISTINCT p.id) AS numero_produtos
                 , COUNT(f.id) AS numero_funcionalidades
             FROM equipe e
             JOIN produto p

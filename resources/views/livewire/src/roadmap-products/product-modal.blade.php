@@ -21,6 +21,13 @@
                 </div>
             </div>
             <div class="modal-footer">
+                @if($data['numero_funcionalidades'] > 0)
+                <a href="/roadmap/{{$data['id']}}" class="btn btn-secondary">Ver funcionalidades desse produto</a>
+                @else
+                <div class="alert alert-info" role="alert">
+                    Este produto não possui nenhuma funcionalidade ligada a ele
+                </div>
+                @endif
                 <button wire:click="saveChanges" class="btn btn-primary">Salvar alterações</button>
                 <script>
                     document.addEventListener('livewire:load', function() {

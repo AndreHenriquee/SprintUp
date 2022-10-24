@@ -170,11 +170,11 @@ class RoadmapBody extends Component
                 , e.nome AS equipe_nome
                 , (
                     CASE
-                        WHEN f.data_inicio > NOW()
+                        WHEN f.data_inicio > NOW() AND f.finalizada <> 1 AND f.porcentagem_conclusao = 0
                             THEN "TO_DO"
-                        WHEN f.data_inicio <= NOW() AND f.finalizada = 0 AND f.porcentagem_conclusao < 100
-                            THEN "DOING"
-                        ELSE "DONE"
+                        WHEN f.finalizada = 1 OR f.porcentagem_conclusao = 100
+                            THEN "DONE"
+                        ELSE "DOING"
                     END
                 ) AS `status`
                 -- Pré-visualização

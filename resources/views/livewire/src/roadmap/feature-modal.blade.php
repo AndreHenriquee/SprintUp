@@ -13,7 +13,7 @@
             <div class="modal-body">
                 <div class="row">
                     <b class="modal-title">
-                        {{$status}} | Porcentagem de conclusão: {{$data['porcentagem_conclusao']}}% ({{$data['finalizada'] ? 'Finalizada' : 'Não finalizada'}})
+                        {{$status}} | Porcentagem de conclusão: {{$data['porcentagem_conclusao']}}% ({{$data['finalizada'] ? 'Tabalho encerrado' : 'Trabalho em andamento'}})
                     </b>
                     <div class="col-12 p-3">
                         <p class="text-wrap">{{$data['descricao']}}</p>

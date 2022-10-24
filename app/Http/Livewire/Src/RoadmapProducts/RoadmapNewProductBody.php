@@ -53,13 +53,13 @@ class RoadmapNewProductBody extends Component
         $this->validate(
             [
                 'nomeProduto' => 'required|min:3|max:50',
-                'descProduto' => 'max:250',
+                'descProduto' => 'max:1000',
             ],
             [
                 'nomeProduto.required' => 'Nome do produto é obrigatório',
                 'nomeProduto.min' => 'Nome do produto precisa ter no mínimo 3 caracteres',
                 'nomeProduto.max' => 'Nome do produto precisa ter no máximo 50 caracteres',
-                'descProduto.max' => 'Descrição do produto precisa ter no máximo 250 caracteres',
+                'descProduto.max' => 'Descrição do produto pode ter no máximo 1000 caracteres',
             ],
         );
 

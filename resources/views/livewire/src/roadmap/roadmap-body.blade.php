@@ -29,7 +29,11 @@
         <div class="col-7 my-auto">
             Aqui está o histórico e o planejamento das funcionalidades trabalhadas pela equipe <b>{{$teamData['nome']}}</b>
         </div>
-        @if ($teamDataAndPermission['permissao_gerenciar_produtos'] && in_array($teamDataAndPermission['cargo'], ['PO', 'SM']))
+        @if (
+        !empty($teamDataAndPermission)
+        && ($teamDataAndPermission['permissao_gerenciar_produtos']
+        && in_array($teamDataAndPermission['cargo'], ['PO', 'SM']))
+        )
         <hr class="opacity-100">
         <div class="row mb-3">
             <div class="col">

@@ -44,13 +44,45 @@ class RoadmapProductsBody extends Component
                 AND p.permitido = 1
         SQL;
 
-        return (array) DB::selectOne(
+        $teamData = (array) DB::selectOne(
             $teamQuery,
             [
                 $this->routeParams['equipe_id'],
                 $sessionParams['usuario_id'],
             ],
         );
+
+        if (!empty($teamData)) {
+            $permissionsToManageItemsQuery = <<<SQL
+                SELECT
+                    tp.referencia
+                    , p.permitido
+                FROM permissao p
+                JOIN tipo_permissao tp
+                    ON p.tipo_permissao_id = tp.id
+                WHERE p.grupo_permissao_id = ?
+                    AND tp.referencia IN (
+                        "[ROADMAP] MNG_ROADMAP_ITEMS"
+                        , "[ROADMAP] MNG_ROADMAP_ITEMS_STATUS"
+                    )
+            SQL;
+
+            $permissionsToManageItems = DB::select(
+                $permissionsToManageItemsQuery,
+                [$teamData['grupo_permissao_id']]
+            );
+
+            $permissionMap = [
+                "[ROADMAP] MNG_ROADMAP_ITEMS" => 'permissao_gerenciar_funcionalidades',
+                "[ROADMAP] MNG_ROADMAP_ITEMS_STATUS" => 'permissao_gerenciar_status_funcionalidades',
+            ];
+
+            foreach ($permissionsToManageItems as $p) {
+                $teamData[$permissionMap[$p->referencia]] = $p->permitido;
+            }
+        }
+
+        return $teamData;
     }
 
     private function fetchTeamProducts(int $teamId)
