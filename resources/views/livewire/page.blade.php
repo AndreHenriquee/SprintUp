@@ -5,8 +5,19 @@
 <body class="bg-light">
     <?php
     $sessionUserData = session('user_data');
+
     if (
-        in_array($alias, ['login', 'register']) ||
+        in_array(
+            $alias,
+            [
+                'login',
+                'login-cliente',
+                'register',
+                'register-cliente',
+                'roadmap-cliente-escolha-time',
+                'roadmap-cliente',
+            ]
+        ) ||
         ($sessionUserData &&
             $sessionUserData['usuario_id'] &&
             $sessionUserData['squad_id']

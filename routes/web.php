@@ -34,16 +34,6 @@ function buildView(
     );
 }
 
-Route::get('/login/{hash_convite?}', function (string $hash_convite = '') {
-    return buildView(
-        'login',
-        'Sprint Up | Login',
-        'src.login.login-body',
-        false,
-        ['hash_convite' => $hash_convite]
-    );
-});
-
 Route::get('/', function () {
     return buildView(
         'decide-home',
@@ -53,11 +43,39 @@ Route::get('/', function () {
     );
 });
 
+Route::get('login/{hash_convite?}', function (string $hash_convite = '') {
+    return buildView(
+        'login',
+        'Sprint Up | Login',
+        'src.login.login-body',
+        false,
+        ['hash_convite' => $hash_convite]
+    );
+});
+
+Route::get('login-cliente', function () {
+    return buildView(
+        'login-cliente',
+        'Sprint Up | Login do cliente',
+        'src.customer-login.customer-login-body',
+        false
+    );
+});
+
 Route::get('register', function () {
     return buildView(
         'register',
         'Sprint Up | Cadastro',
         'src.register.register-form',
+        false
+    );
+});
+
+Route::get('register-cliente', function () {
+    return buildView(
+        'register-cliente',
+        'Sprint Up | Cadastro do cliente',
+        'src.customer-register.customer-register-body',
         false
     );
 });
@@ -131,7 +149,7 @@ Route::get('backlog/{equipe_id}/{squad_id}', function (int $equipe_id, int $squa
     );
 });
 
-Route::get('backlog/{equipe_id}/{squad_id}/create-sprint', function (int $equipe_id,int $squad_id) {
+Route::get('backlog/{equipe_id}/{squad_id}/create-sprint', function (int $equipe_id, int $squad_id) {
     return buildView(
         'backlog',
         'Sprint Up | Nova Sprint',
@@ -144,7 +162,7 @@ Route::get('backlog/{equipe_id}/{squad_id}/create-sprint', function (int $equipe
     );
 });
 
-Route::get('backlog/{equipe_id}/{squad_id}/list-sprints', function (int $equipe_id,int $squad_id) {
+Route::get('backlog/{equipe_id}/{squad_id}/list-sprints', function (int $equipe_id, int $squad_id) {
     return buildView(
         'backlog',
         'Sprint Up | Listagem de Sprints',
@@ -167,6 +185,15 @@ Route::get('roadmap/{produto_id?}', function ($produto_id = null) {
     );
 });
 
+Route::get('roadmap-cliente/', function () {
+    return buildView(
+        'roadmap-cliente-escolha-time',
+        'Sprint Up | Roadmap - Visão do cliente - Escolha da equipe',
+        'src.roadmap-team-choice.roadmap-team-choice-body',
+        false,
+    );
+});
+
 Route::get('roadmap-cliente/{equipe_id}/{produto_id?}', function ($equipe_id,  $produto_id = null) {
     return buildView(
         'roadmap-cliente',
@@ -174,6 +201,26 @@ Route::get('roadmap-cliente/{equipe_id}/{produto_id?}', function ($equipe_id,  $
         'src.roadmap.roadmap-body',
         false,
         ['equipe_id' => $equipe_id, 'produto_id' => $produto_id]
+    );
+});
+
+Route::get('roadmap-produtos/{equipe_id}/', function ($equipe_id) {
+    return buildView(
+        'roadmap-produtos',
+        'Sprint Up | Produtos do Roadmap',
+        'src.roadmap-products.roadmap-products-body',
+        true,
+        ['equipe_id' => $equipe_id]
+    );
+});
+
+Route::get('novo-produto/{equipe_id}/', function ($equipe_id) {
+    return buildView(
+        'novo-produto',
+        'Sprint Up | Novo produtos no Roadmap',
+        'src.roadmap-products.roadmap-new-product-body',
+        true,
+        ['equipe_id' => $equipe_id]
     );
 });
 

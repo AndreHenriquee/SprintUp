@@ -8,8 +8,12 @@ use Illuminate\Support\Facades\DB;
 class RoadmapBody extends Component
 {
     protected $listeners = ['validateRouteParams'];
+
     public $alias;
     public $routeParams;
+
+    public $sessionParams, $teamDataAndPermission;
+
     public $teamData;
     public $features;
     public $products;
@@ -18,20 +22,90 @@ class RoadmapBody extends Component
 
     public function render()
     {
+        $this->sessionParams = session('user_data');
+
+        if (!empty($this->sessionParams)) {
+            $this->teamDataAndPermission = self::fetchTeamDataAndPermission($this->sessionParams);
+        }
+
         $this->teamData = self::fetchTeamData(
             $this->routeParams['equipe_id'] ?? null,
-            session('user_data')
+            $this->sessionParams
         );
 
         $this->features = ['TO_DO' => [], 'DOING' => [], 'DONE' => []];
 
         if (isset($this->teamData['id'])) {
             $this->features = $this->fetchFeatures($this->teamData['id']);
+            $this->products = self::fetchProcucts($this->teamData['id']);
         };
 
-        $this->products = self::fetchProcucts($this->teamData['id']);
-
         return view('livewire.src.roadmap.roadmap-body');
+    }
+
+    private function fetchTeamDataAndPermission(array $sessionParams)
+    {
+        $teamQuery = <<<SQL
+            SELECT
+                e.id
+                , e.nome
+                , eu.grupo_permissao_id
+                , c.referencia AS cargo
+            FROM equipe e
+            JOIN squad s
+                ON e.id = s.equipe_id
+            JOIN equipe_usuario eu
+                ON e.id = eu.equipe_id
+            JOIN squad_usuario su
+                ON s.id = su.squad_id
+                AND eu.usuario_id = su.usuario_id
+            JOIN cargo c
+                ON su.cargo_id = c.id
+            WHERE s.id = ?
+                AND eu.usuario_id = ?
+        SQL;
+
+        $teamData = (array) DB::selectOne(
+            $teamQuery,
+            [
+                $sessionParams['squad_id'],
+                $sessionParams['usuario_id'],
+            ],
+        );
+
+        $teamPermissionsQuery = <<<SQL
+            SELECT
+                tp.referencia
+                , p.permitido
+            FROM permissao p
+            JOIN tipo_permissao tp
+                ON p.tipo_permissao_id = tp.id
+            WHERE p.grupo_permissao_id = ?
+                AND tp.referencia IN (
+                    "[ROADMAP] MNG_PRODUCTS"
+                    , "[ROADMAP] MNG_ROADMAP_ITEMS"
+                    , "[ROADMAP] MNG_ROADMAP_ITEMS_STATUS"
+                    , "[ROADMAP] ANSWER_CUSTOMER_COMMENTS"
+                )
+        SQL;
+
+        $teamPermissions = DB::select(
+            $teamPermissionsQuery,
+            [$teamData['grupo_permissao_id']]
+        );
+
+        $permissionMap = [
+            "[ROADMAP] MNG_PRODUCTS" => 'permissao_gerenciar_produtos',
+            "[ROADMAP] MNG_ROADMAP_ITEMS" => 'permissao_gerenciar_funcionalidades',
+            "[ROADMAP] MNG_ROADMAP_ITEMS_STATUS" => 'permissao_gerenciar_status_funcionalidades',
+            "[ROADMAP] ANSWER_CUSTOMER_COMMENTS" => 'permissao_responder_clientes',
+        ];
+
+        foreach ($teamPermissions as $tp) {
+            $teamData[$permissionMap[$tp->referencia]] = $tp->permitido;
+        }
+
+        return $teamData;
     }
 
     public function validateRouteParams()
@@ -70,9 +144,8 @@ class RoadmapBody extends Component
         );
     }
 
-    private static function fetchTeamData($teamId, array $sessionParams)
+    private static function fetchTeamData($teamId, $sessionParams)
     {
-
         if (!$teamId) {
             $teamBySquadQuery = <<<SQL
                 SELECT
@@ -126,16 +199,15 @@ class RoadmapBody extends Component
                 , e.nome AS equipe_nome
                 , (
                     CASE
-                        WHEN f.data_inicio > NOW()
+                        WHEN f.data_inicio > NOW() AND f.finalizada <> 1 AND f.porcentagem_conclusao = 0
                             THEN "TO_DO"
-                        WHEN f.data_inicio <= NOW() AND f.finalizada = 0 AND f.porcentagem_conclusao < 100
-                            THEN "DOING"
-                        ELSE "DONE"
+                        WHEN f.finalizada = 1 OR f.porcentagem_conclusao = 100
+                            THEN "DONE"
+                        ELSE "DOING"
                     END
                 ) AS `status`
                 -- Pré-visualização
                 , f.nome
-                , f.imagem
                 , f.data_inicio
                 , f.data_fim
                 , f.porcentagem_conclusao
@@ -146,7 +218,6 @@ class RoadmapBody extends Component
                 , f.produto_id
                 , p.id AS produto_id
                 , p.nome AS produto_nome
-                , p.imagem AS produto_imagem
             FROM funcionalidade f
             JOIN produto p
                 ON f.produto_id = p.id
@@ -155,6 +226,14 @@ class RoadmapBody extends Component
                 ON p.equipe_id = e.id
                 AND e.id = ?
                 AND e.roadmap_ativo = 1
+            WHERE (
+                p.excluido <> 1
+                OR p.excluido IS NULL
+            )
+                AND (
+                    f.excluida <> 1
+                    OR f.excluida IS NULL
+                )
             ORDER BY p.nome ASC, f.data_fim DESC
         SQL;
 
@@ -180,6 +259,10 @@ class RoadmapBody extends Component
                 , nome
             FROM produto
             WHERE equipe_id = ?
+                AND (
+                    excluido <> 1
+                    OR excluido IS NULL
+                )
             ORDER BY nome ASC
         SQL;
 

@@ -21,7 +21,7 @@
                 <td>{{date_format(date_create($feature->data_fim),"d/m/Y")}}</td>
                 <td>{{$feature->porcentagem_conclusao}}%</td>
             </tr>
-            <livewire:src.roadmap.feature-modal :data="(array) $feature" :status="$typeMap[$tipo]['titulo']" />
+            <livewire:src.roadmap.feature-modal :teamDataAndPermission="$teamDataAndPermission" :data="(array) $feature" :status="$typeMap[$tipo]['titulo']" />
             @endforeach
             @endforeach
         </tbody>
