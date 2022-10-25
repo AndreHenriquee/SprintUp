@@ -10,7 +10,6 @@ class LoginBody extends Component
     public $alias;
     public $routeParams;
     public $email, $senha;
-    public $query;
 
     public function render()
     {

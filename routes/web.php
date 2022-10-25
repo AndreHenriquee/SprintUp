@@ -149,7 +149,7 @@ Route::get('backlog/{equipe_id}/{squad_id}', function (int $equipe_id, int $squa
     );
 });
 
-Route::get('backlog/{equipe_id}/{squad_id}/create-sprint', function (int $equipe_id,int $squad_id) {
+Route::get('backlog/{equipe_id}/{squad_id}/create-sprint', function (int $equipe_id, int $squad_id) {
     return buildView(
         'backlog',
         'Sprint Up | Nova Sprint',
@@ -162,7 +162,7 @@ Route::get('backlog/{equipe_id}/{squad_id}/create-sprint', function (int $equipe
     );
 });
 
-Route::get('backlog/{equipe_id}/{squad_id}/list-sprints', function (int $equipe_id,int $squad_id) {
+Route::get('backlog/{equipe_id}/{squad_id}/list-sprints', function (int $equipe_id, int $squad_id) {
     return buildView(
         'backlog',
         'Sprint Up | Listagem de Sprints',

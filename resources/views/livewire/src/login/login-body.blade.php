@@ -16,7 +16,6 @@
                         <div>
                             <span class="col-4 my-auto">Não possui login?</span>
                             <a href="/register" class="nav-link">Cadastre-se</a>
-                            <a href="/recovery" class="nav-link">Esqueceu sua senha?</a>
                         </div>
                         @if(session()->has('error'))
                         <div class="alert alert-danger" role="alert">

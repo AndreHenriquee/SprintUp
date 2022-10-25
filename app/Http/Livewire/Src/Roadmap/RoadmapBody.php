@@ -212,12 +212,6 @@ class RoadmapBody extends Component
                 , f.data_fim
                 , f.porcentagem_conclusao
                 , f.finalizada
-                , (
-                    SELECT
-                        COUNT(id)
-                    FROM avaliacao_funcionalidade
-                    WHERE funcionalidade_id = f.id
-                ) AS numero_avaliacoes
                 -- Detalhamento da funcionalidade
                 , f.descricao
                 , f.data_hora_replanejamento
