@@ -28,7 +28,7 @@
                         <p class="form-label mb-2">
                             <b>Responsável: </b> 
                         </p>
-                        <input class="form-control mb-2 mt-2" autocomplete="off" list="squadMembers" id="selectedTaskMember" style="background-color:rgba(195, 195, 195, 0.35);border:none" placeholder="Selecione o responsável">
+                        <input class="form-control mb-4 mt-2" autocomplete="off" list="squadMembers" id="selectedTaskMember" style="background-color:rgba(195, 195, 195, 0.35);border:none" placeholder="Selecione o responsável">
                         <datalist id="squadMembers">
                             @foreach($squadMembers as $squadMember)
                             <option data-value="{{$squadMember->id}}">
@@ -59,8 +59,10 @@
                                 })
                             });
                         </script>
-                        <p class="form-label mb-2"><b>Estimativa: </b> </p>
-                        <div class="row">
+                        <p class="form-label mt-2 mb-2"><b>Prioridade: </b> </p>
+                        <input type="number" class="form-control mb-3" wire:model="prioridade" id="prioridade" style="background-color:rgba(195, 195, 195, 0.35);border:none">
+                        <p class="form-label mt-2 mb-2"><b>Estimativa: </b> </p>
+                        <div class="row mt-2">
                             <div class="col">
                                 <input class="form-check-input" wire:model="estimativeRadio" name="estimativeRadio" id="hoursRadio" type="radio" value="H">
                                 <label class="form-check-label" type="radio">

@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Src\Documentacoes;
 
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Carbon\Carbon;
 
 class DocumentModal extends Component
 {
@@ -332,7 +333,7 @@ class DocumentModal extends Component
             $newCommentId = (int) DB::table('comentario')
                 ->insertGetId([
                     'texto' => $comment,
-                    'data_hora' => date('Y-m-d H:i:s'),
+                    'data_hora' => Carbon::now('America/Sao_Paulo'),
                     'usuario_id' => (int) $this->sessionParams['usuario_id'],
                     'documentacao_id' => (int) $this->data['id'],
                 ]);
@@ -355,7 +356,7 @@ class DocumentModal extends Component
                 ->where('id', $commentId)
                 ->update([
                     'texto' => $comment,
-                    'data_hora' => date('Y-m-d H:i:s'),
+                    'data_hora' => Carbon::now('America/Sao_Paulo'),
                 ]);
 
             $this->emit(

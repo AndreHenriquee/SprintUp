@@ -74,7 +74,7 @@ class CreateSprint extends Component
     {
         $this->validate(
             [
-                'startDate' => 'required|after_or_equal:01/01/2000',
+                'startDate' => 'required|after_or_equal:01/01/2010',
                 'endDate' => 'required|date|after_or_equal:startDate',
                 'selectedCards' => 'required|array|min:1',
                 'selectedCards.*' => 'required'
@@ -257,8 +257,9 @@ class CreateSprint extends Component
             LEFT JOIN sprint sp
                 ON sp.id = t.sprint_id
             WHERE col.id = ?
-            AND t.sprint_id IS NULL
-            ORDER BY t.prioridade ASC
+                AND t.excluida = 0
+                AND t.sprint_id IS NULL
+            ORDER BY t.prioridade, t.data_hora_criacao ASC
         SQL;
 
         return (array) DB::select(

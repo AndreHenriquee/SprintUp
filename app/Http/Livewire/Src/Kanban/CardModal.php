@@ -25,7 +25,12 @@ class CardModal extends Component
     public $teamDataAndPermission;
     public $sessionParams;
     public $alias;
-
+    public $sureToDelete;
+    public $allowedToCommentAtTasks;
+    public $taskComment;
+    public $commentList, $taskMentionId;
+    public $loggedUserComments;
+    protected $listeners = ["removeCard" => "removeCard"];
 
     public function render()
     {
@@ -33,7 +38,31 @@ class CardModal extends Component
         $this->cardMentions = self::fetchCardMentions((int) $this->data['id']);
         $this->squadMembers = self::fetchSquadMembers(session('user_data'));
         $this->teamDataAndPermission = self::fetchTeamDataAndPermission($this->sessionParams);
+        $this->commentList = self::fetchCommentList((int) $this->data['id']);
         return view('livewire.src.kanban.card-modal');
+    }
+
+    private static function fetchCommentList(int $taskId)
+    {
+        $commentListQuery = <<<SQL
+            SELECT
+                c.id
+                , c.texto
+                , c.data_hora
+                , u.id AS usuario_id
+                , u.nome AS usuario_nome
+                , u.email AS usuario_email
+            FROM comentario c
+            JOIN usuario u
+                ON c.usuario_id = u.id
+            WHERE c.tarefa_id = ?
+            ORDER BY data_hora DESC
+        SQL;
+
+        return (array) DB::select(
+            $commentListQuery,
+            [$taskId],
+        );
     }
 
     private function fetchTeamDataAndPermission(array $sessionParams)
@@ -73,6 +102,68 @@ class CardModal extends Component
                 $sessionParams['usuario_id'],
             ],
         );
+    }
+
+    private function validateComment(string $newCommentText, string $oldCommentText)
+    {
+        $eventName = 'invalidComment-' . $this->data['id'];
+
+        if (!empty($oldCommentText) && $newCommentText == $oldCommentText) {
+            $this->emit($eventName, 'Nada foi alterado neste comentário!');
+            return false;
+        }
+
+        $commentLength = strlen(utf8_decode($newCommentText));
+
+        if ($commentLength < 3 || $commentLength > 500) {
+            $this->emit($eventName, 'O comentário deve ter entre 3 a 500 caracteres!');
+            return false;
+        }
+
+        return true;
+    }
+
+    public function updateComment(int $commentId, string $oldComment)
+    {
+        $comment = trim($this->loggedUserComments[$commentId]);
+
+        if ($this->validateComment($comment, trim($oldComment))) {
+            DB::table('comentario')
+                ->where('id', $commentId)
+                ->update([
+                    'texto' => $comment,
+                    'data_hora' => Carbon::now('America/Sao_Paulo'),
+                ]);
+
+            $this->emit(
+                'registeredComment-' . $this->data['id'],
+                $commentId,
+                false,
+                $comment
+            );
+        }
+    }
+
+    public function addComment()
+    {
+        $comment = trim($this->taskComment);
+
+        if ($this->validateComment($comment, '')) {
+            $newCommentId = (int) DB::table('comentario')
+                ->insertGetId([
+                    'texto' => $comment,
+                    'data_hora' => Carbon::now('America/Sao_Paulo'),
+                    'usuario_id' => (int) $this->sessionParams['usuario_id'],
+                    'tarefa_id' => (int) $this->data['id'],
+                ]);
+
+            $this->emit(
+                'registeredComment-' . $this->data['id'],
+                $newCommentId,
+                true,
+                $comment
+            );
+        }
     }
     
     private static function fetchCardMentions(int $cardId)
@@ -144,6 +235,20 @@ class CardModal extends Component
             $squadMembersQuery,
             [$sessionParams['squad_id']],
         );
+    }
+
+    public function removeCard(int $id)
+    {
+        $location = self::returnTo();
+                
+        DB::table('tarefa')
+            ->where('id', $id)
+            ->update([
+                'excluida' => 1,
+            ]);
+
+        return redirect()->to($location); 
+
     }
 
     public function updateCard() 

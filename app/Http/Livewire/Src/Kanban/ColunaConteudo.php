@@ -63,6 +63,7 @@ class ColunaConteudo extends Component
             WHERE col.id = ?
                 AND NOW() BETWEEN sp.inicio AND sp.fim
                 AND sp.finalizada = 0
+                AND t.excluida = 0
             ORDER BY t.prioridade ASC
         SQL;
 
@@ -112,6 +113,7 @@ class ColunaConteudo extends Component
             LEFT JOIN sprint sp
                 ON t.sprint_id = sp.id
             WHERE col.id = ?
+                AND t.excluida = 0
             ORDER BY t.prioridade ASC
         SQL;
 

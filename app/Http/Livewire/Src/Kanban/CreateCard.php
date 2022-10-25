@@ -21,6 +21,7 @@ class CreateCard extends Component
     public $estimativeRadio;
     public $sessionParams;
     public $routeParams;
+    public $prioridade;
 
     protected $listeners = ['setEstimatives' => 'setEstimatives'];
 
@@ -51,6 +52,7 @@ class CreateCard extends Component
         $contador = self::referenceCounter();
         $estimativaId = null;
         $column = self::fetchColumnData($sessionParams);
+        $prioridade = $this->prioridade == null ? 1 : $this->prioridade;
        
         if (self::fieldsValidation()) {
             $taskInfo = DB::table('squad')
@@ -72,7 +74,7 @@ class CreateCard extends Component
                 'referencia' => $taskInfo->referencia . $contador,
                 'titulo' => $this->titulo,
                 'detalhamento' => $this->descricao,
-                'prioridade' => 1,
+                'prioridade' => $prioridade,
                 'data_hora_criacao' => Carbon::now('America/Sao_Paulo'),
                 'data_hora_ultima_movimentacao' => Carbon::now('America/Sao_Paulo'),
                 'coluna_id' => $column->id,
@@ -80,6 +82,7 @@ class CreateCard extends Component
                 'responsavel_id' => $this->taskOwnerId,
                 'relator_id' => $sessionParams['usuario_id'],
                 'estimativa_tarefa_id' => $estimativaId,
+                'excluida'=> 0
             ]);
 
 
