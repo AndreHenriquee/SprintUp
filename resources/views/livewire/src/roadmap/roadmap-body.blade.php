@@ -71,9 +71,9 @@
         </script>
     </div>
     <div class="row mb-3 rounded p-3" style="background-color:#f2f2f2">
-        <livewire:src.roadmap.collapse-roadmap-section :features="$features" :tipo="'TO_DO'" />
-        <livewire:src.roadmap.collapse-roadmap-section :features="$features" :tipo="'DOING'" />
-        <livewire:src.roadmap.collapse-roadmap-section :features="$features" :tipo="'DONE'" />
+        <livewire:src.roadmap.collapse-roadmap-section :teamDataAndPermission="$teamDataAndPermission" :features="$features" :tipo="'TO_DO'" />
+        <livewire:src.roadmap.collapse-roadmap-section :teamDataAndPermission="$teamDataAndPermission" :features="$features" :tipo="'DOING'" />
+        <livewire:src.roadmap.collapse-roadmap-section :teamDataAndPermission="$teamDataAndPermission" :features="$features" :tipo="'DONE'" />
     </div>
     @endif
 </div>

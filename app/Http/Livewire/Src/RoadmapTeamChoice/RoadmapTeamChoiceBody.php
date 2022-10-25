@@ -37,6 +37,10 @@ class RoadmapTeamChoiceBody extends Component
                     p.excluido <> 1
                     OR p.excluido IS NULL
                 )
+                AND (
+                    f.excluida <> 1
+                    OR f.excluida IS NULL
+                )
             GROUP BY e.id, e.nome, e.descricao
             ORDER BY e.nome ASC
         SQL;

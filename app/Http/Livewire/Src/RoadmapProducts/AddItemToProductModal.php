@@ -49,8 +49,8 @@ class AddItemToProductModal extends Component
     {
         if ($this->dataValidated()) {
             DB::table('funcionalidade')->insert([
-                'nome' => $this->itemName,
-                'descricao' => $this->itemDescription,
+                'nome' => trim($this->itemName),
+                'descricao' => trim($this->itemDescription),
                 'data_inicio' => $this->initialDate,
                 'data_fim' => $this->endDate,
                 'porcentagem_conclusao' => $this->conclusionPercentage,

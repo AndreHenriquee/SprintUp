@@ -49,7 +49,7 @@ class RoadmapBody extends Component
             SELECT
                 e.id
                 , e.nome
-                , p.permitido AS permissao_gerenciar_produtos
+                , eu.grupo_permissao_id
                 , c.referencia AS cargo
             FROM equipe e
             JOIN squad s
@@ -61,22 +61,51 @@ class RoadmapBody extends Component
                 AND eu.usuario_id = su.usuario_id
             JOIN cargo c
                 ON su.cargo_id = c.id
-            JOIN permissao p
-                ON eu.grupo_permissao_id = p.grupo_permissao_id
-            JOIN tipo_permissao tp
-                ON p.tipo_permissao_id = tp.id
             WHERE s.id = ?
                 AND eu.usuario_id = ?
-                AND tp.referencia = "[ROADMAP] MNG_PRODUCTS"
         SQL;
 
-        return (array) DB::selectOne(
+        $teamData = (array) DB::selectOne(
             $teamQuery,
             [
                 $sessionParams['squad_id'],
                 $sessionParams['usuario_id'],
             ],
         );
+
+        $teamPermissionsQuery = <<<SQL
+            SELECT
+                tp.referencia
+                , p.permitido
+            FROM permissao p
+            JOIN tipo_permissao tp
+                ON p.tipo_permissao_id = tp.id
+            WHERE p.grupo_permissao_id = ?
+                AND tp.referencia IN (
+                    "[ROADMAP] MNG_PRODUCTS"
+                    , "[ROADMAP] MNG_ROADMAP_ITEMS"
+                    , "[ROADMAP] MNG_ROADMAP_ITEMS_STATUS"
+                    , "[ROADMAP] ANSWER_CUSTOMER_COMMENTS"
+                )
+        SQL;
+
+        $teamPermissions = DB::select(
+            $teamPermissionsQuery,
+            [$teamData['grupo_permissao_id']]
+        );
+
+        $permissionMap = [
+            "[ROADMAP] MNG_PRODUCTS" => 'permissao_gerenciar_produtos',
+            "[ROADMAP] MNG_ROADMAP_ITEMS" => 'permissao_gerenciar_funcionalidades',
+            "[ROADMAP] MNG_ROADMAP_ITEMS_STATUS" => 'permissao_gerenciar_status_funcionalidades',
+            "[ROADMAP] ANSWER_CUSTOMER_COMMENTS" => 'permissao_responder_clientes',
+        ];
+
+        foreach ($teamPermissions as $tp) {
+            $teamData[$permissionMap[$tp->referencia]] = $tp->permitido;
+        }
+
+        return $teamData;
     }
 
     public function validateRouteParams()
@@ -179,18 +208,22 @@ class RoadmapBody extends Component
                 ) AS `status`
                 -- Pré-visualização
                 , f.nome
-                , f.imagem
                 , f.data_inicio
                 , f.data_fim
                 , f.porcentagem_conclusao
                 , f.finalizada
+                , (
+                    SELECT
+                        COUNT(id)
+                    FROM avaliacao_funcionalidade
+                    WHERE funcionalidade_id = f.id
+                ) AS numero_avaliacoes
                 -- Detalhamento da funcionalidade
                 , f.descricao
                 , f.data_hora_replanejamento
                 , f.produto_id
                 , p.id AS produto_id
                 , p.nome AS produto_nome
-                , p.imagem AS produto_imagem
             FROM funcionalidade f
             JOIN produto p
                 ON f.produto_id = p.id
@@ -203,6 +236,10 @@ class RoadmapBody extends Component
                 p.excluido <> 1
                 OR p.excluido IS NULL
             )
+                AND (
+                    f.excluida <> 1
+                    OR f.excluida IS NULL
+                )
             ORDER BY p.nome ASC, f.data_fim DESC
         SQL;
 

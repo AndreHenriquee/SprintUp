@@ -6,6 +6,7 @@ use Livewire\Component;
 
 class CollapseRoadmapSection extends Component
 {
+    public $teamDataAndPermission;
     public $features;
     public $tipo;
     public $typeMap;

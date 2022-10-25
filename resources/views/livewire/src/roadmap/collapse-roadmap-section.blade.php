@@ -16,7 +16,7 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <livewire:src.roadmap.feature-list :features="$features[$tipo]" :tipo="$tipo" :typeMap="$typeMap" />
+            <livewire:src.roadmap.feature-list :teamDataAndPermission="$teamDataAndPermission" :features="$features[$tipo]" :tipo="$tipo" :typeMap="$typeMap" />
         </div>
     </div>
 </div>

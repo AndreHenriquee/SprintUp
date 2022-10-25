@@ -6,6 +6,7 @@ use Livewire\Component;
 
 class FeatureList extends Component
 {
+    public $teamDataAndPermission;
     public $features;
     public $tipo;
     public $typeMap;

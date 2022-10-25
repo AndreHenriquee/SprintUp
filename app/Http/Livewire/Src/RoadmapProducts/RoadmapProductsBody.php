@@ -101,6 +101,10 @@ class RoadmapProductsBody extends Component
                     p.excluido <> 1
                     OR p.excluido IS NULL
                 )
+                AND (
+                    f.excluida <> 1
+                    OR f.excluida IS NULL
+                )
             GROUP BY p.id, p.nome, p.descricao
         SQL;
 
