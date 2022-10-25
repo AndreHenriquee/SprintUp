@@ -1,10 +1,24 @@
 <div wire:ignore.self class="modal fade" id="modalFeature-{{$data['id']}}" tabindex="-1">
     <?php
-    $rolePermission = in_array($teamDataAndPermission['cargo'], ['PO', 'SM']);
+    $hasTeamData = !empty($teamDataAndPermission);
 
-    $allowedToManageItem = $rolePermission && $teamDataAndPermission['permissao_gerenciar_funcionalidades'];
-    $allowedToManageItemStatus = $rolePermission && $teamDataAndPermission['permissao_gerenciar_status_funcionalidades'];
-    $allowedToAnswerCustomers = $teamDataAndPermission['permissao_responder_clientes'];
+    $rolePermission =
+        $hasTeamData
+        && in_array($teamDataAndPermission['cargo'], ['PO', 'SM']);
+
+    $allowedToManageItem =
+        $rolePermission
+        && $hasTeamData
+        && $teamDataAndPermission['permissao_gerenciar_funcionalidades'];
+
+    $allowedToManageItemStatus =
+        $rolePermission &&
+        $hasTeamData
+        && $teamDataAndPermission['permissao_gerenciar_status_funcionalidades'];
+
+    $allowedToAnswerCustomers =
+        $hasTeamData
+        && $teamDataAndPermission['permissao_responder_clientes'];
     ?>
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-content">
@@ -51,15 +65,17 @@
                         @error('featureDescription') <span class="text-danger error">{{ $message }}</span> @enderror
                     </div>
                     @if ($data['data_hora_replanejamento'])
-                    <div class="col-12 text-end">
+                    <div class="col-12 text-end mt-2">
                         Último replanejamento: {{date_format(date_create($data['data_hora_replanejamento']),"d/m/Y H:i:s")}}
                     </div>
                     @endif
                 </div>
+                @if($hasTeamData)
                 <div class="modal-footer mt-3">
                     <button <?= $allowedToManageItem ? '' : 'disabled' ?> id="excludeItem-{{$data['id']}}" class="btn btn-danger">Excluir funcionalidade</button>
                     <button <?= $allowedToManageItem ? '' : 'disabled' ?> wire:click="saveChanges" type="button" class="btn btn-primary">Salvar alterações</button>
                 </div>
+                @endif
             </div>
             <!-- <div class="row">
                 <b class="modal-title">Comentários</b>
