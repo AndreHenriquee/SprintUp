@@ -67,7 +67,7 @@ class CardModal extends Component
 
     private function fetchTeamDataAndPermission(array $sessionParams)
     {
-        
+
         $teamQuery = <<<SQL
             SELECT
                 e.id AS equipe_id
@@ -165,7 +165,7 @@ class CardModal extends Component
             );
         }
     }
-    
+
     private static function fetchCardMentions(int $cardId)
     {
         $mentionsQuery = <<<SQL
@@ -240,39 +240,38 @@ class CardModal extends Component
     public function removeCard(int $id)
     {
         $location = self::returnTo();
-                
+
         DB::table('tarefa')
             ->where('id', $id)
             ->update([
                 'excluida' => 1,
             ]);
 
-        return redirect()->to($location); 
-
+        return redirect()->to($location);
     }
 
-    public function updateCard() 
+    public function updateCard()
     {
         $location = self::returnTo();
         $estimativaId = null;
         $updateOwner = $this->taskOwnerId;
         $updatePriority = $this->prioridade == null ? $this->data['prioridade'] : $this->prioridade;
         $updateColumn = $this->statusSelecionado == null || $this->statusSelecionado === "0"
-            ? $this->data['id_coluna'] 
+            ? $this->data['id_coluna']
             : $this->statusSelecionado;
 
         if ($this->taskOwnerId === null) {
             $updateOwner = $this->data['usuario_responsavel_id'];
         }
-        if( $this->taskOwnerId === "0") {
+        if ($this->taskOwnerId === "0") {
             $updateOwner = null;
         }
 
 
-        if($this->estimativeRadio && $this->spValue || $this->timeValue !== null) {
-            $estimativa= self::setEstimatives();
+        if ($this->estimativeRadio && $this->spValue || $this->timeValue !== null) {
+            $estimativa = self::setEstimatives();
             $forma = $estimativa[1] == "Sp" ? $forma = "Fibonacci" : $forma = "Horas";
-            
+
             $estimativaId = DB::table('estimativa_tarefa')->insertGetId([
                 'estimativa' => $estimativa[0],
                 'forma' => $forma,
@@ -289,29 +288,29 @@ class CardModal extends Component
                 'detalhamento' => $this->detalhamento,
                 'data_hora_ultima_movimentacao' =>  Carbon::now('America/Sao_Paulo'),
                 'prioridade' => $updatePriority,
-                'estimativa_tarefa_id' => $estimativaId,
+                'estimativa_tarefa_id' => empty($estimativaId) ? $this->data['estimativa_id'] : $estimativaId,
                 'coluna_id' => $updateColumn,
             ]);
 
-        return redirect()->to($location); 
+        return redirect()->to($location);
     }
 
     public function returnTo()
     {
         $location;
 
-        if($this->alias === "kanban") {
+        if ($this->alias === "kanban") {
             return $location = $this->alias;
         }
-        if($this->alias === "backlog") {
+        if ($this->alias === "backlog") {
             $equipe = (int) $this->teamDataAndPermission["equipe_id"];
             $squad = (int) $this->sessionParams["squad_id"];
 
-            return $location = $this->alias."/".$equipe."/".$squad;
+            return $location = $this->alias . "/" . $equipe . "/" . $squad;
         }
     }
 
-    public function setEstimatives() 
+    public function setEstimatives()
     {
         if ($this->estimativeRadio == "Sp") {
             $this->timeValue = null;
