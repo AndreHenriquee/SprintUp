@@ -29,6 +29,7 @@ class ColunaConteudo extends Component
                 -- Pré-visualização
                 , t.referencia
                 , t.titulo
+                , est.id AS estimativa_id
                 , est.estimativa
                 , est.forma
                 , est.extensao
@@ -81,6 +82,7 @@ class ColunaConteudo extends Component
                 -- Pré-visualização
                 , t.referencia
                 , t.titulo
+                , est.id AS estimativa_id
                 , est.estimativa
                 , est.forma
                 , est.extensao
