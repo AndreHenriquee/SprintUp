@@ -72,7 +72,7 @@ class Response
     public const HTTP_PRECONDITION_REQUIRED = 428;                                       // RFC6585
     public const HTTP_TOO_MANY_REQUESTS = 429;                                           // RFC6585
     public const HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE = 431;                             // RFC6585
-    public const HTTP_UNAVAILABLE_FOR_LEGAL_REASONS = 451;
+    public const HTTP_UNAVAILABLE_FOR_LEGAL_REASONS = 451;                               // RFC7725
     public const HTTP_INTERNAL_SERVER_ERROR = 500;
     public const HTTP_NOT_IMPLEMENTED = 501;
     public const HTTP_BAD_GATEWAY = 502;
@@ -98,8 +98,6 @@ class Response
         'proxy_revalidate' => false,
         'max_age' => true,
         's_maxage' => true,
-        'stale_if_error' => true,         // RFC5861
-        'stale_while_revalidate' => true, // RFC5861
         'immutable' => false,
         'last_modified' => true,
         'etag' => true,
@@ -380,6 +378,7 @@ class Response
             litespeed_finish_request();
         } elseif (!\in_array(\PHP_SAPI, ['cli', 'phpdbg'], true)) {
             static::closeOutputBuffers(0, true);
+            flush();
         }
 
         return $this;
@@ -700,7 +699,7 @@ class Response
     {
         try {
             return $this->headers->getDate('Expires');
-        } catch (\RuntimeException) {
+        } catch (\RuntimeException $e) {
             // according to RFC 2616 invalid date formats (e.g. "0" and "-1") must be treated as in the past
             return \DateTime::createFromFormat('U', time() - 172800);
         }
@@ -771,38 +770,6 @@ class Response
     public function setMaxAge(int $value): static
     {
         $this->headers->addCacheControlDirective('max-age', $value);
-
-        return $this;
-    }
-
-    /**
-     * Sets the number of seconds after which the response should no longer be returned by shared caches when backend is down.
-     *
-     * This method sets the Cache-Control stale-if-error directive.
-     *
-     * @return $this
-     *
-     * @final
-     */
-    public function setStaleIfError(int $value): static
-    {
-        $this->headers->addCacheControlDirective('stale-if-error', $value);
-
-        return $this;
-    }
-
-    /**
-     * Sets the number of seconds after which the response should no longer return stale content by shared caches.
-     *
-     * This method sets the Cache-Control stale-while-revalidate directive.
-     *
-     * @return $this
-     *
-     * @final
-     */
-    public function setStaleWhileRevalidate(int $value): static
-    {
-        $this->headers->addCacheControlDirective('stale-while-revalidate', $value);
 
         return $this;
     }
@@ -978,14 +945,6 @@ class Response
 
         if (isset($options['s_maxage'])) {
             $this->setSharedMaxAge($options['s_maxage']);
-        }
-
-        if (isset($options['stale_while_revalidate'])) {
-            $this->setStaleWhileRevalidate($options['stale_while_revalidate']);
-        }
-
-        if (isset($options['stale_if_error'])) {
-            $this->setStaleIfError($options['stale_if_error']);
         }
 
         foreach (self::HTTP_RESPONSE_CACHE_CONTROL_DIRECTIVES as $directive => $hasValue) {

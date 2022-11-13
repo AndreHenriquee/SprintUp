@@ -72,20 +72,20 @@ class Application implements ResetInterface
 {
     private array $commands = [];
     private bool $wantHelps = false;
-    private ?Command $runningCommand = null;
+    private $runningCommand = null;
     private string $name;
     private string $version;
-    private ?CommandLoaderInterface $commandLoader = null;
+    private $commandLoader = null;
     private bool $catchExceptions = true;
     private bool $autoExit = true;
-    private InputDefinition $definition;
-    private HelperSet $helperSet;
-    private ?EventDispatcherInterface $dispatcher = null;
-    private Terminal $terminal;
+    private $definition;
+    private $helperSet;
+    private $dispatcher = null;
+    private $terminal;
     private string $defaultCommand;
     private bool $singleCommand = false;
     private bool $initialized = false;
-    private SignalRegistry $signalRegistry;
+    private $signalRegistry;
     private array $signalsToDispatchEvent = [];
 
     public function __construct(string $name = 'UNKNOWN', string $version = 'UNKNOWN')
@@ -228,7 +228,7 @@ class Application implements ResetInterface
         try {
             // Makes ArgvInput::getFirstArgument() able to distinguish an option from an argument.
             $input->bind($this->getDefinition());
-        } catch (ExceptionInterface) {
+        } catch (ExceptionInterface $e) {
             // Errors must be ignored, full binding/validation happens later when the command is known.
         }
 
@@ -276,7 +276,9 @@ class Application implements ResetInterface
             $alternative = $alternatives[0];
 
             $style = new SymfonyStyle($input, $output);
-            $style->block(sprintf("\nCommand \"%s\" is not defined.\n", $name), null, 'error');
+            $output->writeln('');
+            $formattedBlock = (new FormatterHelper())->formatBlock(sprintf('Command "%s" is not defined.', $name), 'error', true);
+            $output->writeln($formattedBlock);
             if (!$style->confirm(sprintf('Do you want to run "%s" instead? ', $alternative), false)) {
                 if (null !== $this->dispatcher) {
                     $event = new ConsoleErrorEvent($input, $output, $e);
@@ -567,7 +569,7 @@ class Application implements ResetInterface
     {
         $this->init();
 
-        return isset($this->commands[$name]) || ($this->commandLoader?->has($name) && $this->add($this->commandLoader->get($name)));
+        return isset($this->commands[$name]) || ($this->commandLoader && $this->commandLoader->has($name) && $this->add($this->commandLoader->get($name)));
     }
 
     /**
@@ -907,11 +909,21 @@ class Application implements ResetInterface
         }
 
         switch ($shellVerbosity = (int) getenv('SHELL_VERBOSITY')) {
-            case -1: $output->setVerbosity(OutputInterface::VERBOSITY_QUIET); break;
-            case 1: $output->setVerbosity(OutputInterface::VERBOSITY_VERBOSE); break;
-            case 2: $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE); break;
-            case 3: $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG); break;
-            default: $shellVerbosity = 0; break;
+            case -1:
+                $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+                break;
+            case 1:
+                $output->setVerbosity(OutputInterface::VERBOSITY_VERBOSE);
+                break;
+            case 2:
+                $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
+                break;
+            case 3:
+                $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
+                break;
+            default:
+                $shellVerbosity = 0;
+                break;
         }
 
         if (true === $input->hasParameterOption(['--quiet', '-q'], true)) {
@@ -957,22 +969,30 @@ class Application implements ResetInterface
             }
         }
 
-        if ($command instanceof SignalableCommandInterface && ($this->signalsToDispatchEvent || $command->getSubscribedSignals())) {
-            if (!$this->signalRegistry) {
-                throw new RuntimeException('Unable to subscribe to signal events. Make sure that the `pcntl` extension is installed and that "pcntl_*" functions are not disabled by your php.ini\'s "disable_functions" directive.');
-            }
+        if ($this->signalsToDispatchEvent) {
+            $commandSignals = $command instanceof SignalableCommandInterface ? $command->getSubscribedSignals() : [];
 
-            if (Terminal::hasSttyAvailable()) {
-                $sttyMode = shell_exec('stty -g');
+            if ($commandSignals || null !== $this->dispatcher) {
+                if (!$this->signalRegistry) {
+                    throw new RuntimeException('Unable to subscribe to signal events. Make sure that the `pcntl` extension is installed and that "pcntl_*" functions are not disabled by your php.ini\'s "disable_functions" directive.');
+                }
 
-                foreach ([\SIGINT, \SIGTERM] as $signal) {
-                    $this->signalRegistry->register($signal, static function () use ($sttyMode) {
-                        shell_exec('stty '.$sttyMode);
-                    });
+                if (Terminal::hasSttyAvailable()) {
+                    $sttyMode = shell_exec('stty -g');
+
+                    foreach ([\SIGINT, \SIGTERM] as $signal) {
+                        $this->signalRegistry->register($signal, static function () use ($sttyMode) {
+                            shell_exec('stty '.$sttyMode);
+                        });
+                    }
+                }
+
+                foreach ($commandSignals as $signal) {
+                    $this->signalRegistry->register($signal, [$command, 'handleSignal']);
                 }
             }
 
-            if ($this->dispatcher) {
+            if (null !== $this->dispatcher) {
                 foreach ($this->signalsToDispatchEvent as $signal) {
                     $event = new ConsoleSignalEvent($command, $input, $output, $signal);
 
@@ -988,10 +1008,6 @@ class Application implements ResetInterface
                     });
                 }
             }
-
-            foreach ($command->getSubscribedSignals() as $signal) {
-                $this->signalRegistry->register($signal, [$command, 'handleSignal']);
-            }
         }
 
         if (null === $this->dispatcher) {
@@ -1002,7 +1018,7 @@ class Application implements ResetInterface
         try {
             $command->mergeApplicationDefinition();
             $input->bind($command->getDefinition());
-        } catch (ExceptionInterface) {
+        } catch (ExceptionInterface $e) {
             // ignore invalid options/arguments for now, to allow the event listeners to customize the InputDefinition
         }
 
