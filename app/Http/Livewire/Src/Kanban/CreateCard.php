@@ -34,7 +34,8 @@ class CreateCard extends Component
         return view('livewire.src.kanban.create-card');
     }
 
-    public function setEstimatives() {
+    public function setEstimatives()
+    {
 
         if ($this->estimativeRadio == "Sp") {
             $this->timeValue = null;
@@ -53,17 +54,17 @@ class CreateCard extends Component
         $estimativaId = null;
         $column = self::fetchColumnData($sessionParams);
         $prioridade = $this->prioridade == null ? 1 : $this->prioridade;
-       
+
         if (self::fieldsValidation()) {
             $taskInfo = DB::table('squad')
                 ->where('squad.id', '=', $sessionParams['squad_id'])
                 ->select('squad.referencia as referencia')
                 ->first();
 
-            if($this->estimativeRadio && $this->spValue || $this->timeValue !== null) {
-                $estimativa= self::setEstimatives();
+            if ($this->estimativeRadio && $this->spValue || $this->timeValue !== null) {
+                $estimativa = self::setEstimatives();
                 $forma = $estimativa[1] == "Sp" ? $forma = "Fibonacci" : $forma = "Horas";
-                
+
                 $estimativaId = DB::table('estimativa_tarefa')->insertGetId([
                     'estimativa' => $estimativa[0],
                     'forma' => $forma,
@@ -79,14 +80,14 @@ class CreateCard extends Component
                 'data_hora_ultima_movimentacao' => Carbon::now('America/Sao_Paulo'),
                 'coluna_id' => $column->id,
                 'squad_id' => $sessionParams['squad_id'],
-                'responsavel_id' => $this->taskOwnerId,
+                'responsavel_id' => (int) $this->taskOwnerId ? (int) $this->taskOwnerId : null,
                 'relator_id' => $sessionParams['usuario_id'],
                 'estimativa_tarefa_id' => $estimativaId,
-                'excluida'=> 0
+                'excluida' => 0
             ]);
 
 
-            return redirect('/backlog/'.$this->teamDataAndPermission['squad_id'].'/'.$this->teamDataAndPermission['equipe_id']);
+            return redirect('/backlog/' . $this->teamDataAndPermission['squad_id'] . '/' . $this->teamDataAndPermission['equipe_id']);
         }
     }
 
@@ -189,12 +190,11 @@ class CreateCard extends Component
             $columnInfo,
             [$sessionParams['usuario_id'], $sessionParams['squad_id']],
         );
-
     }
 
     private function fetchTeamDataAndPermission(array $sessionParams)
     {
-        
+
         $teamQuery = <<<SQL
             SELECT e.id AS equipe_id
                 , s.id AS squad_id
