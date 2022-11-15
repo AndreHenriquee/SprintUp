@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Src\TeamInvite;
 use App\Mail\InviteLinkEmail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Livewire\Component;
 
 class TeamInviteBody extends Component
@@ -252,6 +253,7 @@ class TeamInviteBody extends Component
                     'grupo_permissao_nome' => $permissionGroupName,
                     'email' => trim($this->email),
                     'hash' => $this->inviteLink,
+                    'root_link' => URL::to('/'),
                 ])
             );
     }

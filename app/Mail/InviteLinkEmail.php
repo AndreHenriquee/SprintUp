@@ -40,6 +40,7 @@ class InviteLinkEmail extends Mailable
                 'grupo_permissao_nome' => $this->emailInfo['grupo_permissao_nome'],
                 'email' => $this->emailInfo['email'],
                 'hash' => $this->emailInfo['hash'],
+                'root_link' => $this->emailInfo['root_link'],
             ]);
     }
 }
